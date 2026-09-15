@@ -19,3 +19,34 @@ UAVDT base & --- & --- & --- & 50.7 & 36.7 & 14.9 & --- & --- & 49.2 & --- \\
 \bottomrule
 \end{tabular}}
 \end{table*}
+\begin{table*}[!t]
+\centering
+\caption{Complete negative-result audit (native protocol, best epoch; val DFL at the best-mAP epoch). YOLO26 rows omit DFL (different loss normalization); SAFT/YOLO26 runs use shorter schedules as marked.}
+\label{tab:negative}
+\resizebox{\textwidth}{!}{%
+\begin{tabular}{lrrrrrr}
+\toprule
+Configuration & Input & Ep & AP & $\Delta$AP & val DFL & $\Delta$DFL \\
+\midrule
+Baseline v8m (G0) & 1280 & 100 & 33.42 & +33.42 & 1.134 & --- \\
+G1 module & 1280 & 100 & 33.50 & +0.08 & 1.202 & +0.068 \\
+G2 module & 1280 & 100 & 33.39 & -0.03 & 1.213 & +0.079 \\
+G3 module & 1280 & 100 & 33.29 & -0.13 & 1.206 & +0.072 \\
+G6 module & 1280 & 100 & 33.37 & -0.05 & 1.207 & +0.073 \\
+G6 + head decouple & 1280 & 100 & 32.73 & -0.69 & 1.192 & +0.058 \\
+G6 + weight share & 1280 & 100 & 32.95 & -0.47 & 1.141 & +0.007 \\
+Baseline v8m-P2 & 1280 & 100 & 35.91 & +35.91 & 1.171 & --- \\
+G6 on v8m-P2 & 1280 & 100 & 35.44 & -0.47 & 1.221 & +0.050 \\
+YOLO26m-P2 & 1280 & 50 & 32.01 & --- & --- & --- \\
+YOLO26s-P2 & 1280 & 50 & 25.58 & --- & --- & --- \\
+YOLO26m & 1600 & 50 & 33.47 & --- & --- & --- \\
+Confusion-only sampling & 1600 & 100 & 38.42 & --- & 1.229 & --- \\
+Tail-only sampling & 1600 & 100 & 38.25 & --- & 1.233 & --- \\
+Curated allocator & 1600 & 100 & 38.24 & --- & 1.238 & --- \\
+Tail-only @1280 & 1280 & 100 & 35.98 & --- & 1.173 & --- \\
+SAFT slice-only & 640 & 30 & 39.49 & --- & 1.113 & --- \\
+SAFT hybrid & 640 & 20 & 39.51 & --- & 1.115 & --- \\
+SAFT tail & 640 & 20 & 39.37 & --- & 1.116 & --- \\
+\bottomrule
+\end{tabular}}
+\end{table*}
