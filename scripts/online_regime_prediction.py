@@ -12,8 +12,8 @@ BASE = Path(__file__).resolve().parent.parent
 PAIRS = {  # res -> (base run, treated run, label)
     640:  ("base_v8mp2_640", "dahpM_640", "union"),
     960:  ("s960_base", "s960_union", "union"),
-    1280: ("h4_mp2_1280_long", "t1_tri_oversample", "tail(freq proxy)"),
-    1600: ("h8_v8l_1600", "h9_v8l_1600_union", "union"),
+    1280: ("base_v8mp2_1280", "tail_sampling_1280", "tail(freq proxy)"),
+    1600: ("base_v8mp2_1600", "union_sampling_1600", "union"),
     1920: ("s1920_base", "s1920_union", "union"),
 }
 PROBE_EPOCHS = [10, 15, 20, 25, 30, 40, 50]

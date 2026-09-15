@@ -229,13 +229,14 @@ Method & Source & Input & Params & \ap & \apf & \aps \\
 \midrule
 \multicolumn{7}{l}{\emph{General-purpose detectors (640\,px, our pipeline: 100 ep, batch 8, identical val/protocol)}}\\
 Faster R-CNN+FPN \cite{frcnn} & Lit. (val) & 1333 & 41.5M & 20.9 & 38.2 & --- \\
-YOLOv8s \cite{yolov8} & Rep. & 640 & 11.2M & 19.43 & --- & --- \\
-YOLOv8m \cite{yolov8} & Rep. & 640 & 25.9M & 21.99 & --- & --- \\
-YOLOv8l \cite{yolov8} & Rep. & 640 & 43.6M & 23.18 & --- & --- \\
-YOLO11l \cite{yolo11} & Rep. & 640 & 25.3M & 23.97 & --- & --- \\
-RT-DETR-L \cite{rtdetr} & Rep. & 640$^{b}$ & 32.0M & 17.32 & --- & --- \\
-YOLOv8l-P2 (ours-arch) & Rep. & 640 & 42.8M & 27.16 & --- & --- \\
-\textbf{DAHP-M (ours, full)} & Rep. & 640 & 25.0M & 26.11 & --- & --- \\
+YOLOv8s \cite{yolov8} & Rep. & 640 & 11.2M & 19.43 & 32.98 & 10.68 \\
+YOLOv8m \cite{yolov8} & Rep. & 640 & 25.9M & 21.99 & 36.67 & 12.91 \\
+YOLOv8m-P2 & Rep. & 640 & 25.0M & 25.90 & 42.53 & 17.10 \\
+YOLOv8l \cite{yolov8} & Rep. & 640 & 43.6M & 23.18 & 38.32 & 14.02 \\
+YOLO11l \cite{yolo11} & Rep. & 640 & 25.3M & 23.97 & 39.46 & 14.50 \\
+RT-DETR-L \cite{rtdetr} & Rep. & 640$^{b}$ & 32.0M & 17.32 & 31.13 & 10.12 \\
+YOLOv8l-P2 (ours-arch) & Rep. & 640 & 42.8M & 27.16 & 44.17 & 18.19 \\
+\textbf{DAHP-M (ours, full)} & Rep. & 640 & 25.0M & 26.11 & 42.60 & 17.55 \\
 \midrule
 \multicolumn{7}{l}{\emph{UAV-specialized detectors}}\\
 QueryDet \cite{querydet} & Lit. (val) & 640 & --- & 25.1 & 45.5 & --- \\
@@ -250,10 +251,10 @@ UAV-DETR-R50 \cite{uavdetr} & Lit. (val) & 640 & 22.9M & 31.5 & 51.1 & --- \\
 \remdet{} & Rep. & 1600 & 74.1M & 29.7$^{a}$ & 48.6 & 25.7 \\
 \midrule
 \multicolumn{7}{l}{\emph{Ours (non-invasive, data-driven)}}\\
-Baseline YOLOv8m-P2 & Rep. & 1280 & 25.0M & 34.63 (36.20) & 54.82 & --- \\
-$V_L{+}P_2$ (no sampling) & Rep. & 1600 & 42.8M & 37.59 (39.04) & --- & 30.0 \\
-\textbf{\dahpL{} (single model)} & Rep. & 1600 & 42.8M & \textbf{38.16} (40.06) & \textbf{62.40} & \textbf{30.0} \\
-\textbf{\dahpL{}-E7 (ensemble)} \cite{wbf} & Rep. & 1600 & $7{\times}$ & \textbf{39.61} & 60.38 & --- \\
+Baseline YOLOv8m-P2 & Rep. & 1280 & 25.0M & 34.63 (36.20) & 54.82 & 26.28 \\
+$V_L{+}P_2$ (no sampling) & Rep. & 1600 & 42.8M & 37.59 (39.04) & 58.53 & 30.00 \\
+\textbf{\dahpL{} (single model)} & Rep. & 1600 & 42.8M & 38.16 (40.06) & 59.23 & 30.26 \\
+\textbf{\dahpL{}-E7 (ensemble)} \cite{wbf} & Rep. & 1600 & $7{\times}$ & \textbf{39.61} & \textbf{60.38} & \textbf{31.56} \\
 \bottomrule
 \multicolumn{7}{l}{\footnotesize $^{a}$compute-matched retrain (single 3090, batch 1, auto-scaled LR, 100\,ep): best checkpoint at epoch 90 (0.297; final-epoch val 0.268). $^{b}$RT-DETR}\\
 \multicolumn{7}{l}{\footnotesize trains at an effective 1280\,px despite the 640\,px request (disclosed). ``Input=full'' denotes native-resolution processing}\\
@@ -318,27 +319,27 @@ The principle makes falsifiable predictions beyond the regimes where it was iden
 
 \paragraph{Online two-arm prediction}
 \label{sec:online}
-Fig.~\ref{fig:online} tests whether the principle can be applied \emph{before} the final result is known---the distinction between a predictive principle and an a-posteriori categorization. For each resolution we compute the best-checkpoint gap between the rebalanced arm and its matched base using only the first $E$ epochs. A 30-epoch probe already recovers the final ranking almost perfectly (Pearson $r{=}0.97$), and a simple threshold---probe gap $>2.5$~\ap{} at epoch 30---separates the positive-sum regimes (640: $2.71$, 960: $5.28$, 1600: $4.25$, 1920: $6.88$) from the saturated 1280-px regime (gap $1.95$, decaying to $\approx0$) in $5/5$ cases. We also report the negative control honestly: the single-run epoch-gain criterion $\bar g(E)$ alone does \emph{not} discriminate regimes online; the operative diagnostic is the two-arm \emph{exposure probe}, which is exactly what the exposure-headroom formulation predicts.
+Fig.~\ref{fig:online} tests whether the principle can be applied \emph{before} the final result is known---the distinction between a predictive principle and an a-posteriori categorization. For each resolution we compute the best-checkpoint gap between the rebalanced arm and its matched base using only the first $E$ epochs. A 30-epoch probe already recovers the final ranking almost perfectly (Pearson $r{=}0.98$), and a simple threshold---probe gap $>2.5$~\ap{} at epoch 30---separates the positive-sum regimes (640: $2.71$, 960: $5.28$, 1600: $2.58$, 1920: $6.88$) from the saturated 1280-px regime (gap $1.95$, decaying to $\approx0$) in $5/5$ cases. We also report the negative control honestly: the single-run epoch-gain criterion $\bar g(E)$ alone does \emph{not} discriminate regimes online; the operative diagnostic is the two-arm \emph{exposure probe}, which is exactly what the exposure-headroom formulation predicts.
 
 \begin{figure}[!t]
 \centering
 \includegraphics[width=\columnwidth]{figures_v2/fig9_online_regime.pdf}
-\caption{Online two-arm prediction test. (a) Best-checkpoint gap trajectories (rebalanced $-$ base) per resolution; (b) early probe gap versus final gain---a 30-epoch probe attains $r{=}0.97$ and a $2.5$-\ap{} threshold separates positive-sum from saturated regimes in $5/5$ cases.}
+\caption{Online two-arm prediction test. (a) Best-checkpoint gap trajectories (rebalanced $-$ base) per resolution; (b) early probe gap versus final gain---a 30-epoch probe attains $r{=}0.98$ and a $2.5$-\ap{} threshold separates positive-sum from saturated regimes in $5/5$ cases.}
 \label{fig:online}
 \end{figure}
 
 \begin{table}[!t]
 \centering
-\caption{Union-sampling effect across the resolution--regime matrix (native protocol, matched 60/100-epoch budgets per series). The effect tracks data-exposure headroom, not resolution alone.}
+\caption{Union-sampling effect across the resolution--regime matrix on the same YOLOv8m-P2 detector family (native protocol, matched 60/100-epoch budgets per series). The effect tracks data-exposure headroom, not resolution alone.}
 \label{tab:lawmatrix}
 \resizebox{\columnwidth}{!}{\begin{tabular}{lccccc}
 \toprule
 +Resolution & 640 & 960 & 1280 & 1600 & 1920 \\
 \midrule
-+base \ap & 27.27 & 30.26 & 36.20 & 39.04 & 35.67 \\
-+$+$union \ap & 27.48 & 33.41 & $\approx$36.2$^{c}$ & 40.06 & 39.50 \\
++base \ap & 27.27 & 30.26 & 36.20 & 38.07 & 35.67 \\
++$+$union \ap & 27.48 & 33.41 & $\approx$36.2$^{c}$ & 38.85 & 39.50 \\
 \midrule
-+$\Delta$ & $+0.21$ & $+3.15$ & $\approx0$ & $+1.02$ & $+3.83$ \\
++$\Delta$ & $+0.21$ & $+3.15$ & $\approx0$ & $+0.78$ & $+3.83$ \\
 +regime & unlearn. & under-fit & saturated & sweet & expos.-lim. \\
 \bottomrule
 \multicolumn{6}{l}{\footnotesize $^{c}$frequency-sampling proxy at 1280 (36.25 vs.\ 36.20); union at 640/960/1600/1920.}

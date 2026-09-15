@@ -19,8 +19,8 @@ plt.rcParams.update({
 })
 
 res = [640, 960, 1280, 1600, 1920]
-base = [27.27, 30.26, 36.20, 39.04, 35.67]
-union = [27.48, 33.41, 36.25, 40.06, 39.50]
+base = [27.27, 30.26, 36.20, 38.07, 35.67]
+union = [27.48, 33.41, 36.25, 38.85, 39.50]
 delta = [u - b for u, b in zip(union, base)]
 regime = ["unlearnable", "under-fit", "saturated", "sweet spot", "exposure-lim."]
 
