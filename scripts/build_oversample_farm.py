@@ -33,9 +33,11 @@ def main():
                         "混淆轴=1,2,4,5,7 people,bicycle,van,truck,awning)")
     p.add_argument("--random-count", type=int, default=0,
                    help=">0 时改为随机过采样 N 张图 (与类无关, 用作数据量对照)")
+    p.add_argument("--seed", type=int, default=42,
+                   help="随机过采样/洗牌种子 (volume-control 多种子实验)")
     args = p.parse_args()
     tail_classes = {int(x) for x in args.classes.split(",")}
-    rng = random.Random(args.seed if hasattr(args, "seed") else 42)
+    rng = random.Random(args.seed)
     random_targets = set()
     src_img_dir = Path(args.root) / "VisDrone2019-DET-train" / "images"
     if args.random_count > 0:

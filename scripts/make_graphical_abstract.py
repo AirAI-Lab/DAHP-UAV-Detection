@@ -23,8 +23,8 @@ gs = fig.add_gridspec(1, 3, width_ratios=[1.0, 1.5, 1.1], wspace=0.30)
 ax0 = fig.add_subplot(gs[0]); ax0.axis("off")
 ax0.set_xlim(0, 10); ax0.set_ylim(0, 10)
 ax0.text(5, 9.3, "UAV imagery: 3 coupled pathologies", ha="center", fontsize=12, fontweight="bold")
-items = [("Scale", "68.6% < 32px", C["blue"]),
-         ("Long-tail", "56:1 head:tail", C["orange"]),
+items = [("Scale", "85.3% < 32px*", C["blue"]),
+         ("Long-tail", "45:1 head:tail", C["orange"]),
          ("Confusion", "23 pairs > 0.85", C["red"])]
 for i, (t, s, col) in enumerate(items):
     y = 6.8 - i * 2.6

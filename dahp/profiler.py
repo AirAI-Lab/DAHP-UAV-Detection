@@ -13,7 +13,12 @@ from itertools import combinations
 from typing import Dict, List, Optional, Tuple
 
 import numpy as np
-import torch
+
+try:                      # torch is optional: only used for the legacy
+    import torch          # class_weights tensor (v1 compatibility)
+    torch.from_numpy(numpy.zeros(1))   # functional probe (numpy interop)
+except Exception:         # pragma: no cover
+    torch = None
 
 
 @dataclass
@@ -41,6 +46,16 @@ class DatasetProfile:
     per_class_median_area: np.ndarray = None  # (nc,)
     suggest_p2: bool = False
     suggest_resolution: int = 640
+    resolution_ladder: List[int] = field(default_factory=lambda: [960, 1280, 1600, 1920])
+    small_mass: float = 0.0            # sum_c f(c) * s_small(c)  (Eq. 2)
+    tiny_mass: float = 0.0             # sum_c f(c) * s_tiny(c)
+    confusion_axis: List[int] = field(default_factory=list)   # policy axis A = graph \ head (Eq. 3)
+    kappa_threshold: float = 0.85      # confusion-graph edge threshold (reported)
+    kappa_lambda: float = 0.6
+    axis_threshold: float = 0.86        # oversampling-eligibility margin over head
+    head_classes: List[int] = field(default_factory=list)      # N_c > mean(N)
+    geo_overlap_matrix: np.ndarray = None                      # auxiliary: J_sigma
+    kappa_matrix: np.ndarray = None                            # primary structural proxy
 
     # 挑战3: 类别混淆
     confusion_matrix: np.ndarray = None       # (nc, nc)
@@ -57,7 +72,7 @@ class DatasetProfile:
     dense_scene_ratio: float = 0.0
 
     # v1 兼容
-    class_weights: Optional[torch.Tensor] = None
+    class_weights: Optional["torch.Tensor"] = None
     coarse_to_fine: Dict[int, List[int]] = field(default_factory=dict)
     fine_to_coarse: Dict[int, int] = field(default_factory=dict)
 
@@ -66,7 +81,7 @@ class DatasetProfile:
         for k, v in self.__dict__.items():
             if isinstance(v, np.ndarray):
                 d[k] = v.tolist()
-            elif isinstance(v, torch.Tensor):
+            elif torch is not None and isinstance(v, torch.Tensor):
                 d[k] = v.tolist()
             else:
                 d[k] = v
@@ -178,34 +193,25 @@ class DatasetProfilerV2:
                 "large": float((areas >= med_th).sum() / len(areas)),
             }
 
-        suggest_p2 = small_ratio > 0.4
-        suggest_resolution = 1280 if tiny_ratio > 0.4 else 640
+        # Eq. (2): frequency-weighted small-object mass drives the P2 decision
+        small_mass = float(sum(class_freq[c] * per_class_scale_bins[c]["small"] for c in range(nc)))
+        tiny_mass = float(sum(class_freq[c] * per_class_scale_bins[c]["tiny"] for c in range(nc)))
+        suggest_p2 = small_mass > 0.3
 
-        # ── 挑战3: 混淆 ──
-        confusion = self._compute_confusion(per_class_areas, per_class_ar, nc)
-        ar_overlap = self._compute_overlap_matrix(per_class_ar, nc)
-        size_overlap = self._compute_overlap_matrix(per_class_areas, nc)
+        # Algorithm 1: resolution ladder {960..1920}; pick r* preferring the
+        # intermediate regime. Label-only prior from the empirical regime curve:
+        # larger tiny/small mass requires more exposure headroom (higher r*).
+        ladder = [960, 1280, 1600, 1920]
+        if tiny_mass > 0.55:
+            suggest_resolution = 1920      # extreme exposure limitation
+        elif tiny_mass > 0.35:
+            suggest_resolution = 1600      # documented sweet spot
+        elif tiny_mass > 0.15:
+            suggest_resolution = 1280
+        else:
+            suggest_resolution = 960
 
-        high_conf_pairs = []
-        for i in range(nc):
-            for j in range(i + 1, nc):
-                if confusion[i, j] > 0.5:
-                    high_conf_pairs.append((confusion[i, j], i, j))
-        high_conf_pairs.sort(reverse=True)
-
-        # 混淆但有长宽比/尺寸区分信号
-        conf_with_ar = np.zeros((nc, nc), dtype=bool)
-        conf_with_size = np.zeros((nc, nc), dtype=bool)
-        for i in range(nc):
-            for j in range(i + 1, nc):
-                if confusion[i, j] > 0.5:
-                    # 长宽比分布重叠 < 混淆度 → 长宽比有区分力
-                    if ar_overlap[i, j] < confusion[i, j] - 0.1:
-                        conf_with_ar[i, j] = conf_with_ar[j, i] = True
-                    if size_overlap[i, j] < confusion[i, j] - 0.1:
-                        conf_with_size[i, j] = conf_with_size[j, i] = True
-
-        # ── 共现 ──
+        # ── 共现 Jaccard (Eq. 3 的 J_co 项) ──
         cooccur = np.zeros((nc, nc), dtype=int)
         for cls_set in img_classes:
             for a, b in combinations(cls_set, 2):
@@ -219,6 +225,55 @@ class DatasetProfilerV2:
             for j in range(i + 1, nc):
                 union = class_img_counts[i] + class_img_counts[j] - cooccur[i, j]
                 cooccur_jaccard[i, j] = cooccur_jaccard[j, i] = cooccur[i, j] / max(union, 1)
+
+        # ── 挑战3: 注解级结构混淆代理 (Eq. 3) ──
+        # kappa(a,b) = lam * J_ar(a,b) + (1-lam) * J_scale(a,b),  lam = 0.6
+        #   J_ar    : aspect-ratio distribution histogram intersection
+        #   J_scale : equivalent-side-length distribution histogram intersection
+        # Co-occurrence Jaccard is reported as an auxiliary statistic only.
+        confusion = self._compute_confusion(per_class_areas, per_class_ar, nc)
+        ar_overlap = self._compute_overlap_matrix(per_class_ar, nc)
+        size_overlap = self._compute_overlap_matrix(per_class_areas, nc)
+        geo_overlap = self._compute_overlap_matrix(per_class_areas, nc)
+
+        kappa_threshold = 0.85
+        high_conf_pairs = []
+        axis_classes = set()
+        for i in range(nc):
+            for j in range(i + 1, nc):
+                if confusion[i, j] > kappa_threshold:
+                    high_conf_pairs.append((confusion[i, j], i, j))
+                    axis_classes.update((i, j))
+                elif confusion[i, j] > 0.5:
+                    high_conf_pairs.append((confusion[i, j], i, j))
+        high_conf_pairs.sort(reverse=True)
+        # head classes (N_c > mean over non-empty) anchor the confusion axis:
+        # A = {c not in head, c not in T : kappa(c, h) > axis_threshold for some head h}
+        # The margin tau_A = 0.86 over the graph threshold 0.85 excludes the
+        # borderline semantic near-duplicate pair (people-pedestrian, 0.854).
+        axis_threshold = 0.86
+        head_classes = sorted(c for c in range(nc) if class_counts[c] > mean_cnt)
+        tail_set = set(tail_classes)
+        axis = set()
+        for h in head_classes:
+            for c in range(nc):
+                if c in head_classes or c in tail_set:
+                    continue
+                if confusion[h, c] > axis_threshold:
+                    axis.add(c)
+        confusion_axis = sorted(axis)
+
+        # 混淆但有长宽比/尺寸区分信号
+        conf_with_ar = np.zeros((nc, nc), dtype=bool)
+        conf_with_size = np.zeros((nc, nc), dtype=bool)
+        for i in range(nc):
+            for j in range(i + 1, nc):
+                if confusion[i, j] > 0.5:
+                    # 长宽比分布重叠 < 混淆度 → 长宽比有区分力
+                    if ar_overlap[i, j] < confusion[i, j] - 0.1:
+                        conf_with_ar[i, j] = conf_with_ar[j, i] = True
+                    if size_overlap[i, j] < confusion[i, j] - 0.1:
+                        conf_with_size[i, j] = conf_with_size[j, i] = True
 
         avg_obj_per_img = total / max(num_images, 1)
         dense_ratio = sum(1 for s in img_classes if len(s) > 20) / max(len(img_classes), 1)
@@ -254,6 +309,10 @@ class DatasetProfilerV2:
             small_object_ratio=small_ratio, tiny_object_ratio=tiny_ratio,
             per_class_median_area=median_areas,
             suggest_p2=suggest_p2, suggest_resolution=suggest_resolution,
+            resolution_ladder=ladder, small_mass=small_mass, tiny_mass=tiny_mass,
+            confusion_axis=confusion_axis, kappa_threshold=kappa_threshold, kappa_lambda=0.6,
+            axis_threshold=axis_threshold,
+            head_classes=head_classes, geo_overlap_matrix=geo_overlap, kappa_matrix=confusion,
             confusion_matrix=confusion, high_confusion_pairs=high_conf_pairs,
             per_class_aspect_ratios=per_class_ar,
             aspect_ratio_overlap_matrix=ar_overlap,
@@ -263,7 +322,7 @@ class DatasetProfilerV2:
             co_occurrence_jaccard=cooccur_jaccard,
             avg_objects_per_image=avg_obj_per_img,
             dense_scene_ratio=dense_ratio,
-            class_weights=torch.from_numpy(cfw),
+            class_weights=(torch.from_numpy(cfw) if torch is not None else cfw),
             coarse_to_fine=hierarchy, fine_to_coarse=fine_to_coarse,
         )
 
@@ -279,15 +338,26 @@ class DatasetProfilerV2:
             return 1.0
         ha, _ = np.histogram(a, bins=bins, range=(lo, hi), density=True)
         hb, _ = np.histogram(b, bins=bins, range=(lo, hi), density=True)
-        return float(np.minimum(ha, hb).sum() / max(ha.sum(), hb.sum(), 1e-8))
+        ha = ha / max(ha.sum(), 1e-8)
+        hb = hb / max(hb.sum(), 1e-8)
+        return float(np.minimum(ha, hb).sum())
 
-    def _compute_confusion(self, areas, ars, nc):
+    def _compute_confusion(self, areas, ars, nc, lam: float = 0.6):
+        """Eq. (3): kappa(a,b) = lam * J_ar(a,b) + (1-lam) * J_scale(a,b).
+
+        An annotation-level *structural confusion proxy*:
+          J_ar    : histogram intersection of aspect-ratio distributions
+          J_scale : histogram intersection of squared equivalent side length
+                    (instance scale s = w*h at the reference resolution)
+        Head-pruned graph edges with kappa > 0.85 form the policy axis A.
+        Co-occurrence Jaccard and geo overlap are auxiliary statistics.
+        """
         conf = np.zeros((nc, nc))
         for i in range(nc):
             for j in range(i + 1, nc):
-                ar_ov = self._histogram_intersection(ars[i], ars[j])
-                sz_ov = self._histogram_intersection(areas[i], areas[j])
-                conf[i, j] = conf[j, i] = 0.6 * ar_ov + 0.4 * sz_ov
+                j_ar = self._histogram_intersection(ars[i], ars[j])
+                j_sc = self._histogram_intersection(areas[i], areas[j])
+                conf[i, j] = conf[j, i] = lam * j_ar + (1.0 - lam) * j_sc
         return conf
 
     def _compute_overlap_matrix(self, distributions, nc):

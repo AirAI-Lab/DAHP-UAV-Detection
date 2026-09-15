@@ -71,7 +71,7 @@ def fig1():
     ax.set_xticks(np.arange(10))
     ax.set_xticklabels([SHORT[i] for i in order], rotation=52, ha="right")
     ax.set_ylabel("Instance count (log)")
-    ax.set_title("(a) Long-tail: 56:1 head-tail ratio", loc="left", fontweight="bold")
+    ax.set_title("(a) Long-tail: 45:1 head-tail ratio", loc="left", fontweight="bold")
     ax.annotate("tail", xy=(8.4, counts[order[8]]), xytext=(7.0, counts[order[0]] * 0.08),
                 fontsize=7, color=C["red"],
                 arrowprops=dict(arrowstyle="->", color=C["red"], lw=0.7))
@@ -83,15 +83,15 @@ def fig1():
         ax.text(xv + 1.2, ax.get_ylim()[1] * 0.72, lab, fontsize=6.5, va="top")
     ax.set_xlabel("Equivalent side length (px @1280)")
     ax.set_ylabel("Instances")
-    ax.set_title("(b) Scale: 68.6% below 32px", loc="left", fontweight="bold")
+    ax.set_title("(b) Scale: 85.3% below 32px (640-ref)", loc="left", fontweight="bold")
     ax = axes[2]
     pairs = sorted([(co[a, b], SHORT[a], SHORT[b]) for a in range(10) for b in range(a + 1, 10)], reverse=True)[:7]
     y = np.arange(len(pairs))[::-1]
     ax.barh(y, [p[0] for p in pairs], color=C["orange"], height=0.62, zorder=3)
     ax.set_yticks(y)
     ax.set_yticklabels([f"{p[1]}-{p[2]}" for p in pairs])
-    ax.set_xlabel("Co-occurrence similarity")
-    ax.set_title("(c) Confusion-prone pairs", loc="left", fontweight="bold")
+    ax.set_xlabel("Structural similarity $\\kappa$")
+    ax.set_title("(c) Structurally confusable pairs", loc="left", fontweight="bold")
     fig.tight_layout(w_pad=1.6)
     save(fig, "fig1_factor_stats")
 

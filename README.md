@@ -8,9 +8,9 @@ DAHP targets three coupled pathologies of UAV imagery with a single,
 **label-only** profiler and **strictly non-invasive** training-time policies
 (no architecture change, no loss change, no inference-time change):
 
-1. **Long-tailed class distribution** (VisDrone head:tail ~ 56:1)
-2. **Object-scale imbalance** (68.6% of instances < 32 px)
-3. **Inter-class confusion** (23 class pairs with confusion > 0.85)
+1. **Long-tailed class distribution** (VisDrone head:tail ~ 45:1)
+2. **Object-scale imbalance** (85.3% of instances < 32 px at the 640-px reference)
+3. **Inter-class confusion** (23 class pairs with structural similarity > 0.85; head-anchored axis {van, truck})
 
 ## Key idea
 
