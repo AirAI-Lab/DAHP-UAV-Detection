@@ -1,0 +1,25 @@
+# datasets & runs
+data/
+runs/
+results/
+weights/
+*.pt
+*.onnx
+
+# python
+__pycache__/
+*.py[cod]
+*.egg-info/
+.venv/
+
+# latex
+*.aux
+*.log
+*.out
+*.synctex.gz
+*.bbl
+*.blg
+
+# os/editor
+.DS_Store
+Thumbs.db

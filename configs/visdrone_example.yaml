@@ -1,0 +1,17 @@
+# Example Ultralytics-style dataset config for VisDrone2019-DET.
+# Adjust the path fields to your local layout.
+path: data/VisDrone2019
+train: VisDrone2019-DET-train/images
+val: VisDrone2019-DET-val/images
+
+names:
+  0: pedestrian
+  1: people
+  2: bicycle
+  3: car
+  4: van
+  5: truck
+  6: tricycle
+  7: awning-tricycle
+  8: bus
+  9: motor

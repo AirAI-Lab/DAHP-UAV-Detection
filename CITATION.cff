@@ -1,0 +1,22 @@
+cff-version: 1.2.0
+message: "If you use this code, please cite the paper."
+title: "Regime-Dependent Rebalancing: A Data-Driven, Non-Invasive Framework for Long-Tailed, Scale-Variant Object Detection in UAV Imagery"
+type: article
+authors:
+  - name: "AirAI-Lab"
+journal: "IEEE Transactions on Geoscience and Remote Sensing"
+year: 2026
+notes: "Under review"
+repository-code: "https://github.com/AirAI-Lab/DAHP-UAV-Detection"
+abstract: >-
+  A label-only profiler quantifies long-tail, scale imbalance, and confusion
+  pathologies in UAV imagery and maps them, through a regime-dependent
+  rebalancing law, to strictly non-invasive training-time policies.
+keywords:
+  - UAV object detection
+  - long-tailed recognition
+  - data-driven profiling
+  - oversampling
+  - VisDrone
+  - UAVDT
+license: MIT
