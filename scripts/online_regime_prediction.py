@@ -8,7 +8,7 @@ import matplotlib
 matplotlib.use("Agg")
 import matplotlib.pyplot as plt
 
-BASE = Path("/home/wn/wn/edge_infer_cloud/models/ahair_det")
+BASE = Path(__file__).resolve().parent.parent
 PAIRS = {  # res -> (base run, treated run, label)
     640:  ("base_v8mp2_640", "dahpM_640", "union"),
     960:  ("s960_base", "s960_union", "union"),

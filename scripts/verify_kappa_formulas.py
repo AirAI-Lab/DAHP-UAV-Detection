@@ -3,7 +3,7 @@ import os, sys, json
 import numpy as np
 from itertools import combinations
 
-BASE = '/home/wn/wn/edge_infer_cloud/data/datasets'
+BASE = os.environ.get('DAHP_DATA', 'data')
 VD_NAMES = ['pedestrian','people','bicycle','car','van','truck','tricycle','awning-tricycle','bus','motor']
 UAV_NAMES = ['car','truck','bus','van']
 
@@ -67,5 +67,6 @@ def profile(label_dir, names, ref):
 res=[]
 res.append(profile(f'{BASE}/VisDrone2019/VisDrone2019-DET-train/labels', VD_NAMES, 1280))
 res.append(profile(f'{BASE}/UAVDT/UAVDT-2024-DET/train/labels', UAV_NAMES, 1024))
-json.dump(res, open('/home/wn/wn/edge_infer_cloud/models/ahair_det/results/kappa_formula_verification.json','w'), indent=1)
+os.makedirs('results', exist_ok=True)
+json.dump(res, open('results/kappa_formula_verification.json','w'), indent=1)
 print('SAVED kappa_formula_verification.json')
