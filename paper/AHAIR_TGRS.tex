@@ -234,6 +234,8 @@ YOLOv8m \cite{yolov8} & Rep. & 640 & 25.9M & 21.99 & 36.67 & 12.91 \\
 YOLOv8m-P2 & Rep. & 640 & 25.0M & 25.90 & 42.53 & 17.10 \\
 YOLOv8l \cite{yolov8} & Rep. & 640 & 43.6M & 23.18 & 38.32 & 14.02 \\
 YOLO11l \cite{yolo11} & Rep. & 640 & 25.3M & 23.97 & 39.46 & 14.50 \\
+YOLO12-L \cite{yolo12} & Rep. & 640 & 26.5M & 23.67 & 39.14 & 14.31 \\
+YOLO26-L \cite{yolo26} & Rep. & 640 & 26.3M & 24.90 & 42.23 & 15.93 \\
 RT-DETR-L \cite{rtdetr} & Rep. & 640$^{b}$ & 32.0M & 17.32 & 31.13 & 10.12 \\
 YOLOv8l-P2 (ours-arch) & Rep. & 640 & 42.8M & 27.16 & 44.17 & 18.19 \\
 \textbf{DAHP-M (ours, full)} & Rep. & 640 & 25.0M & 26.11 & 42.60 & 17.55 \\
@@ -262,7 +264,7 @@ $V_L{+}P_2$ (no sampling) & Rep. & 1600 & 42.8M & 37.59 (39.04) & 58.53 & 30.00 
 \end{tabular}
 \end{table*}
 
-Table~\ref{tab:main} summarizes the twelve-detector comparison. Against the strongest reproduced UAV detector baseline under our evaluation protocol, the single-model recipe gains $+8.3$~\ap{}; the rebalancing policy itself introduces no architectural modification (the P2 head is a disclosed, separately ablated configuration choice); against the baseline it gains $+3.9$~\ap{} ($+10.7\%$) with tail-class \ap{} rising $0.29{\to}0.331$ and \aps{} $0.267{\to}0.302$.
+Table~\ref{tab:main} summarizes the reproduced and literature comparison. Against the strongest reproduced UAV detector baseline under our evaluation protocol, the single-model recipe gains $+8.3$~\ap{}; the rebalancing policy itself introduces no architectural modification (the P2 head is a disclosed, separately ablated configuration choice); against the baseline it gains $+3.9$~\ap{} ($+10.7\%$) with tail-class \ap{} rising $0.29{\to}0.331$ and \aps{} $0.267{\to}0.302$.
 
 \subsection{Factor Attribution and Component Ablation}
 \label{sec:attribution}
@@ -295,19 +297,18 @@ We first separate the two conflated levers of resolution and architecture using 
 
 \begin{table}[!t]
 \centering
-\caption{Same-detector resolution ladders (native protocol, md300). The P2 head contributes $+4.0$~\ap{} at 640\,px but only $+1.7$~\ap{} at 1600\,px: its benefit is strongest where objects are smallest relative to the network stride.}
+\caption{Same-detector resolution ladders (native protocol, md300, identical evaluator). The P2 head contributes about $+4$~\ap{} at 640 and 1280\,px but only $+1.1$~\ap{} at 1600\,px: its benefit is strongest where objects are smallest relative to the network stride.}
 \label{tab:ladder}
 \begin{tabular}{lccc}
 \toprule
 Detector & 640 & 1280 & 1600 \\
 \midrule
 YOLOv8m-P2 & 27.27 & 36.20 & 38.07 \\
-YOLOv8l-P2 & 28.52 & 37.96 & 39.04 \\
-YOLOv8l (vanilla) & 23.18 & --- & 35.93$^{\dagger}$ \\
+YOLOv8l-P2 & 27.21 & 37.96 & 39.04 \\
+YOLOv8l (vanilla) & 23.21 & 33.76 & 37.94 \\
 \midrule
-\emph{P2 gain (v8l)} & \emph{$+4.0$} & --- & \emph{$+1.7$} \\
+\emph{P2 gain (v8l)} & \emph{$+4.0$} & \emph{$+4.2$} & \emph{$+1.1$} \\
 \bottomrule
-\multicolumn{4}{l}{\footnotesize $^{\dagger}$md100 value; the native-protocol control is 37.94.}
 \end{tabular}
 \end{table}
 
@@ -475,6 +476,7 @@ A label-only profiler, a regime-indexed rebalancing principle, and a strictly no
 \bibitem{gfl} X. Li, W. Wu, L. Wu, S. Chen, X. Hu, J. Li, J. Tang, and J. Yang, ``Generalized focal loss: Learning qualified and distributed bounding boxes for dense object detection,'' in \emph{Adv. Neural Inf. Process. Syst.}, vol. 33, 2020.
 \bibitem{deform} J. Dai, H. Qi, Y. Xiong, Y. Li, G. Zhang, H. Hu, and Y. Wei, ``Deformable convolutional networks,'' in \emph{Proc. IEEE Int. Conf. Comput. Vis.}, pp. 764--773, 2017, doi: 10.1109/ICCV.2017.88.
 \bibitem{yolo11} G. Jocher and Q. Jin, ``Ultralytics YOLO11,'' Ultralytics, 2024. [Online]. Available: \url{https://docs.ultralytics.com/models/yolo11/}. Accessed: Sep. 15, 2026.
+\bibitem{yolo12} G. Jocher and Q. Jin, ``Ultralytics YOLO12,'' Ultralytics, 2025. [Online]. Available: \url{https://docs.ultralytics.com/models/yolo12/}. Accessed: Sep. 18, 2026.
 \bibitem{yolo26} Ultralytics, ``YOLO26,'' Ultralytics, 2025. [Online]. Available: \url{https://docs.ultralytics.com/models/yolo26/}. Accessed: Sep. 15, 2026.
 \end{thebibliography}
 
