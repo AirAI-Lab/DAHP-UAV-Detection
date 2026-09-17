@@ -36,16 +36,18 @@ for i, (t, s, col) in enumerate(items):
 # ── 块2: 定律 (fig8b 精简) ──
 ax1 = fig.add_subplot(gs[1])
 res = [640, 960, 1280, 1600, 1920]
-delta = [0.21, 3.15, 0.05, 1.02, 3.83]
+delta = [0.21, 3.15, 0.05, 0.78, 3.83]
+residual = [0, 0, 0, 0, 0.49]
 colors = [C["grey"], C["green"], C["grey"], C["blue"], C["orange"]]
-ax1.bar(range(5), delta, color=colors, width=0.62, zorder=3)
+ax1.bar(range(5), delta, color=colors, width=0.62, zorder=3, alpha=0.48)
+ax1.bar(range(5), residual, color="#8B0000", width=0.62, zorder=4)
 for i, d in enumerate(delta):
     ax1.text(i, d + 0.12, f"{d:+.1f}", ha="center", fontsize=11, fontweight="bold")
 ax1.axhline(0, color=C["black"], lw=0.9)
 ax1.set_xticks(range(5)); ax1.set_xticklabels([str(r) for r in res], fontsize=11)
 ax1.set_ylabel("ΔAP of union sampling", fontsize=11)
 ax1.set_ylim(-0.7, 4.7)
-ax1.set_title("Regime-dependent rebalancing law", fontsize=12.5, fontweight="bold", pad=8)
+ax1.set_title("Exposure-aware rebalancing principle", fontsize=12.5, fontweight="bold", pad=8)
 ax1.text(1, -0.58, "under-fit", ha="center", fontsize=9, color=C["green"])
 ax1.text(2, -0.58, "saturated", ha="center", fontsize=9, color=C["grey"])
 ax1.text(4, -0.58, "exposure-lim.", ha="center", fontsize=9, color=C["orange"])
@@ -63,7 +65,7 @@ for i, v in enumerate(vals):
 ax2.set_xticks(range(3)); ax2.set_xticklabels(names, fontsize=9.5)
 ax2.set_ylabel("AP (COCO md100)", fontsize=11)
 ax2.set_ylim(0, 44)
-ax2.set_title("+8.3 AP, 58% params, zero arch change", fontsize=12.5, fontweight="bold", pad=8)
+ax2.set_title("+8.3 AP; 58% params; policy adds no arch change", fontsize=11.7, fontweight="bold", pad=8)
 ax2.grid(axis="y", alpha=0.25, lw=0.5)
 
 # 块间箭头
