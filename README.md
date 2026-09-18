@@ -130,7 +130,7 @@ Bilingual pairs are maintained as `*.md` and `*.zh-CN.md`.
 - `docs/claim_evidence.csv` - machine-readable claim/evidence/status index
 - `docs/PAPER_PROCESS_PLAYBOOK.md` - reusable paper-writing and experiment-audit process
 - `docs/PAPER_PROCESS_PLAYBOOK.zh-CN.md` - Chinese reusable paper-process tutorial
-- `skills/paper-evidence-workflow/` - reusable evidence-first manuscript workflow skill
+- `skills/paper-evidence-workflow/` - bilingual evidence-first manuscript workflow skill
 - `docs/EXPERIMENTS.md` - experimental protocol and fair-comparison rules
 - `paper/` - manuscript source and figures
 

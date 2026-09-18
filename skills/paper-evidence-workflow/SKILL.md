@@ -3,6 +3,8 @@ name: paper-evidence-workflow
 description: Plan, implement, revise, and audit evidence-backed research papers and experiment code, including fair baselines, controlled experiments, claim traceability, figures, reproducibility, review response, and submission readiness. Use for manuscript drafting, revision, or research-code workflows; not for unrelated prose editing.
 ---
 
+[English](SKILL.md) | [简体中文](SKILL.zh-CN.md)
+
 # Paper Evidence Workflow
 
 Maintain an unbroken chain from raw experimental records to every manuscript claim. Never let a narrative claim outrun its evidence. The researcher owns hypotheses, interpretations, claims, authorship decisions, and final approval.
