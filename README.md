@@ -122,6 +122,7 @@ python scripts/bench_fps.py \
 - `docs/REVISION_EVIDENCE_MATRIX.md` - claim-to-evidence audit and reviewer-risk matrix
 - `docs/claim_evidence.csv` - machine-readable claim/evidence/status index
 - `docs/PAPER_PROCESS_PLAYBOOK.md` - reusable paper-writing and experiment-audit process
+- `docs/PAPER_PROCESS_PLAYBOOK.zh-CN.md` - Chinese reusable paper-process tutorial
 - `docs/EXPERIMENTS.md` - experimental protocol and fair-comparison rules
 - `paper/` - manuscript source and figures
 
