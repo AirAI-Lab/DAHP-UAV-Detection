@@ -1,8 +1,9 @@
 # DAHP: Regime-Dependent Rebalancing for UAV Object Detection
 
-Official implementation of **"Regime-Dependent Rebalancing: A Data-Driven,
-Non-Invasive Framework for Long-Tailed, Scale-Variant Object Detection in
-UAV Imagery"**.
+[English](README.md) | [简体中文](README.zh-CN.md)
+
+Official implementation of **"Regime-Dependent Rebalancing: An Exposure-Aware
+Data-Driven Framework for Long-Tailed UAV Object Detection"**.
 
 DAHP targets three coupled pathologies of UAV imagery with a single,
 **label-only** profiler and **strictly non-invasive** training-time policies
@@ -36,6 +37,9 @@ recipe transfers to UAVDT (+0.69 AP overall, +1.69 tail).
 | Method | Input | AP (md100) | Params |
 |---|---|---|---|
 | YOLOv8m-P2 baseline | 1280 | 34.63 | 25.0M |
+| YOLO12-L | 640 | 23.67 | 26.5M |
+| YOLO26-L | 640 | 24.90 | 26.3M |
+| DAHP-M | 640 | 26.11 | 25.0M |
 | V_L (vanilla large) | 1600 | 35.93 | 43.6M |
 | V_L+P2 | 1600 | 37.59 | 42.8M |
 | **DAHP-L (ours)** | **1600** | **38.16** | **42.8M** |
@@ -52,7 +56,8 @@ runs at 24.5 FPS on one RTX 3090.
 dahp/        label-only profiler (three pathologies, regime signals)
 scripts/     farm builders, evaluation, benchmarks, figure generation
 configs/     example dataset configs
-docs/        experiment protocol notes
+docs/        bilingual experiment, fact, evidence, and process documents
+skills/      reusable evidence workflow
 paper/       manuscript LaTeX sources, figures, graphical abstract
 ```
 
@@ -118,6 +123,8 @@ python scripts/bench_fps.py \
 
 ## Documentation
 
+Bilingual pairs are maintained as `*.md` and `*.zh-CN.md`.
+
 - `docs/FACT_TABLE.md` - objective manuscript facts and pending items
 - `docs/REVISION_EVIDENCE_MATRIX.md` - claim-to-evidence audit and reviewer-risk matrix
 - `docs/claim_evidence.csv` - machine-readable claim/evidence/status index
@@ -131,9 +138,8 @@ python scripts/bench_fps.py \
 
 ```bibtex
 @article{dahp_uav_detection,
-  title   = {Regime-Dependent Rebalancing: A Data-Driven, Non-Invasive
-             Framework for Long-Tailed, Scale-Variant Object Detection in
-             UAV Imagery},
+  title   = {Regime-Dependent Rebalancing: An Exposure-Aware Data-Driven
+             Framework for Long-Tailed UAV Object Detection},
   author  = {AirAI-Lab},
   journal = {IEEE Transactions on Geoscience and Remote Sensing},
   year    = {2026},

@@ -1,97 +1,98 @@
 ---
 name: paper-evidence-workflow
-description: Plan, revise, and audit evidence-backed research papers, including fair baseline comparisons, controlled experiments, claim-evidence traceability, figures, reproducibility, and submission readiness. Use for manuscript drafting or revision; do not use for unrelated prose editing.
+description: Plan, implement, revise, and audit evidence-backed research papers and experiment code, including fair baselines, controlled experiments, claim traceability, figures, reproducibility, review response, and submission readiness. Use for manuscript drafting, revision, or research-code workflows; not for unrelated prose editing.
 ---
 
 # Paper Evidence Workflow
 
-Maintain an unbroken chain from raw experimental records to every manuscript claim. Never let a narrative claim outrun its evidence.
+Maintain an unbroken chain from raw experimental records to every manuscript claim. Never let a narrative claim outrun its evidence. The researcher owns hypotheses, interpretations, claims, authorship decisions, and final approval.
 
-## Required working artifacts
+## Route to a reference
 
-Create these before substantial writing or revision:
+Read only the reference needed for the current mode:
 
-1. **Fact table** — dataset/split, counts, model, checkpoint provenance, hardware, package versions, schedule, batch, seeds, metric definitions, evaluation protocol, latency protocol, completed results, pending results, and disclosed deviations.
-2. **Literature evidence matrix** — verified citation key, exact finding, benchmark/split, input size, protocol, and limitation. Entries without a verified source are forbidden.
-3. **Experiment matrix** — research question, hypothesis, treatment, control, fixed variables, metrics, seed policy, and decision rule.
-4. **Claim-evidence matrix** — manuscript sentence, supporting table/figure/JSON/citation, protocol, status (`supported`, `pending`, `remove`), and remaining action.
-5. **Submission checklist** — manuscript, cover letter, highlights, graphical abstract, ethics/funding/data statements, supplements, code, and reproducibility instructions.
+- **New project or full thesis-to-paper process:** `references/research-lifecycle.md` and `references/research-lifecycle.zh-CN.md`.
+- **Research code, queues, checkpoints, servers, release engineering:** `references/experiment-code-ops.md` and `.zh-CN.md`.
+- **Working with Codex from idea to submission:** `references/codex-research-collaboration.md` and `.zh-CN.md`.
+- **DAHP project history and reusable lessons:** `references/dahp-case-study.md` and `.zh-CN.md`.
+- **Ready-to-copy tables and checklists:** `references/artifact-templates.md` and `.zh-CN.md`.
 
-Mark unknown facts `PENDING`; never infer them. Keep separate columns for incomparable protocols.
+Maintain substantial project documents in English and Chinese. When a result changes, update both language versions in the same commit.
+
+## Required project artifacts
+
+Before substantial writing or implementation, create:
+
+1. **Fact table** — dataset/split, counts, model, checkpoint provenance, hardware, package versions, schedule, batch, seeds, metric definitions, evaluation protocol, latency protocol, completed/pending results, and deviations.
+2. **Literature evidence matrix** — verified citation key, exact finding, benchmark/split, input size, protocol, and limitation.
+3. **Experiment matrix** — research question, hypothesis, treatment, control, fixed variables, metrics, seed policy, decision rule, and failure mode.
+4. **Claim-evidence matrix** — manuscript sentence, evidence file/table/figure, protocol, uncertainty, status, and action.
+5. **Run/status board** — active and completed runs, epochs, best/final metrics, process state, result mtime, and intended paper use.
+6. **Submission checklist** — manuscript, supplements, cover letter, statements, code, data availability, and reproducibility instructions.
+
+Mark unknown facts `PENDING`; never infer them. Keep incomparable protocols in separate fields.
 
 ## Research and experiment design
 
 - State a one-sentence thesis that the full paper must prove.
 - Derive research questions from that thesis; every experiment must answer a question or expose a boundary condition.
-- Separate factors that can cause the outcome: architecture, input resolution, capacity, training exposure/data volume, targeted policy, evaluator, and schedule.
-- Prefer a three-tier comparison:
+- Separate architecture, input resolution, capacity, training exposure/data volume, targeted policy, evaluator, and schedule.
+- Use a three-tier comparison:
   1. same-protocol general baselines;
-  2. domain-specific baselines, clearly marked reproduced versus literature;
+  2. domain-specific baselines marked reproduced/literature/official weights;
   3. same-detector ablations and mechanism controls.
-- For each baseline, record split, input size, epochs, batch, hardware, checkpoint provenance, parameters/FLOPs, evaluator, protocol, and deviations.
-- Use volume-matched and exposure-matched controls when data duplication or schedule changes can explain a gain.
-- Report n, mean, standard deviation, and paired differences where available. Avoid significance language without an appropriate test and effect size.
-- Keep best-checkpoint selection identical across arms.
+- Record split, input size, epochs, batch, hardware, checkpoint provenance, parameters/FLOPs, evaluator, protocol, and deviations for every baseline.
+- Add volume-matched and exposure-matched controls when data duplication or schedule changes can explain a gain.
+- Report n, mean, standard deviation, and paired differences where available. Avoid significance language without a valid test and effect size.
+- Keep checkpoint-selection policy identical across arms.
 
 ## Writing and revision sequence
 
 1. Methods — only facts present in the fact table and code.
-2. Results — one controlled finding per paragraph or table; state effects and boundaries without generalizing.
+2. Results — one controlled finding per paragraph; state effects and boundaries.
 3. Discussion — mechanism, comparison with prior work, limitations, and scope.
 4. Introduction — pathology, gap, bounded contribution, and core result.
-5. Abstract and conclusion — reuse only claims already supported by the evidence matrix.
+5. Abstract and conclusion — reuse only supported claims.
 6. Cover letter and supplementary material.
 
-Do not repeat the introduction in the discussion. Organize discussion by mechanism and evidence boundaries.
+For reviewer comments, create a response matrix: concern, type, manuscript location, evidence needed, change made, limitation, and exact response. Prefer controlled experiments over rhetorical defense.
 
 ## Claim and fairness audit
 
-For every factual sentence, verify:
+For every factual sentence verify:
 
-- the exact numeric source;
+- numeric source;
 - evaluation protocol;
-- train/validation/test split;
+- split;
 - input size;
 - schedule and exposure;
-- whether the row is reproduced, official-weight reproduction, or literature-only;
-- whether subtraction is mathematically and protocol valid;
-- whether n and uncertainty are adequate;
-- whether wording such as “state of the art”, “causes”, “significant”, or “architecture-free” is justified.
+- reproduced versus literature status;
+- validity of subtraction;
+- n and uncertainty;
+- whether “state of the art”, “causes”, “significant”, or “architecture-free” is justified.
 
-If a claim has no evidence row, either remove the claim or add the required experiment. If an experiment is pending, label it pending internally and keep it out of final conclusions.
+If a claim has no evidence row, remove it or add the experiment. Pending evidence stays out of final conclusions.
 
-## Figure and table audit
+## Figure, table, and code audit
 
-- One message per figure panel.
-- Caption states the comparison and controls.
-- Plot data must come from the same source as the corresponding table.
-- Keep units, terminology, abbreviations, class names, and protocol labels consistent.
-- Use readable fonts at final column width and preserve vector output where possible.
-- Show uncertainty when multiple seeds exist.
-- Commit plotting scripts and raw result summaries.
-
-## Code and reproducibility
-
-Before submission or public release:
-
-- verify that method equations, code defaults, and manuscript parameters agree;
-- include configs, seeds, evaluation scripts, run manifest, and checksums;
-- strip internal run IDs, private paths, credentials, and machine-specific assumptions;
-- provide exact environment setup and inference commands;
-- document unavailable external ground truth or benchmark limitations;
-- separate validation results from official test/challenge claims.
+- One message per figure panel; captions state comparison and controls.
+- Plot data come from the same result files as tables.
+- Terminology, units, abbreviations, class names, and protocol labels are consistent.
+- Equations, code defaults, manuscript parameters, and released configs agree.
+- Figure/table scripts are committed and fail on missing results.
+- Seeds, resume behavior, evaluator, and environment are reproducible.
+- Public releases contain no private paths, credentials, internal IDs, or unexplained machine-specific assumptions.
 
 ## Final quality gates
 
-Run these checks before calling a manuscript complete:
-
 - [ ] every abstract and contribution claim has an evidence row;
-- [ ] all pending items are excluded from final claims;
-- [ ] no protocols are mixed in one subtraction;
-- [ ] baselines and deviations are disclosed;
-- [ ] statistical language matches n and test status;
+- [ ] pending items are excluded from final claims;
+- [ ] no mixed-protocol subtraction;
+- [ ] baseline deviations disclosed;
+- [ ] statistical language matches n and tests;
 - [ ] equations match implementation;
-- [ ] figures match tables and raw results;
-- [ ] references are verified and correctly scoped;
+- [ ] figures and tables match raw results;
+- [ ] references verified and correctly scoped;
 - [ ] LaTeX compiles twice without errors, unresolved references, or overfull boxes;
-- [ ] supplement, code, data statement, and reproducibility instructions are complete.
+- [ ] supplement, code, data statement, and reproducibility instructions are complete;
+- [ ] bilingual documentation is synchronized.
