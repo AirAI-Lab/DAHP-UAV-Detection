@@ -6,7 +6,7 @@ UAV Imagery"**.
 
 DAHP targets three coupled pathologies of UAV imagery with a single,
 **label-only** profiler and **strictly non-invasive** training-time policies
-(no architecture change, no loss change, no inference-time change):
+(the sampling policy itself adds no architecture, loss, or inference-time change):
 
 1. **Long-tailed class distribution** (VisDrone head:tail ~ 45:1)
 2. **Object-scale imbalance** (85.3% of instances < 32 px at the 640-px reference)
@@ -17,16 +17,19 @@ DAHP targets three coupled pathologies of UAV imagery with a single,
 A dataset profiler measures the three pathologies from labels alone and maps
 them to a **resolution/backbone ladder** (R), **union oversampling** of tail
 and confusion-axis classes (T+C), and optional **weighted-boxes fusion** (E).
-A *regime-dependent rebalancing law* gates when sampling helps:
+An *exposure-aware regime-dependent rebalancing principle* gates when sampling helps:
 
 | Resolution | 640 | 960 | 1280 | 1600 | 1920 |
 |---|---|---|---|---|---|
-| dAP of union sampling | +0.21 | +3.15 | ~0 | +1.02 | +3.83 |
+| Same-epoch union dAP | +0.21 | +3.15 | ~0 | +0.78 | +3.83 |
+| Exposure-matched residual | — | — | pending | — | +0.49 native / +0.42 md100 |
 | Regime | unlearnable | under-fit | saturated | sweet spot | exposure-limited |
 
-Rebalancing is positive-sum only in under-fitted / exposure-limited regimes;
-in saturated regimes it is approximately zero-sum. This law was replicated on
-UAVDT (union +0.69 AP overall, +1.69 tail) and is the core theoretical claim.
+Rebalancing is positive-sum only when learnability and exposure headroom permit;
+in saturated regimes it is approximately zero-sum. The 1920-px same-epoch gain
+is mostly an exposure effect: after a 120-epoch exposure-matched control, the
+residual is +0.49 native / +0.42 md100 AP and +0.92 APs. The same profiler
+recipe transfers to UAVDT (+0.69 AP overall, +1.69 tail).
 
 ## Results (VisDrone val)
 
@@ -115,8 +118,11 @@ python scripts/bench_fps.py \
 
 ## Documentation
 
-- `docs/EXPERIMENTS.md` - full experimental protocol (fair-comparison rules,
-  budgets, seeds, resolution ladders, negative results)
+- `docs/FACT_TABLE.md` - objective manuscript facts and pending items
+- `docs/REVISION_EVIDENCE_MATRIX.md` - claim-to-evidence audit and reviewer-risk matrix
+- `docs/claim_evidence.csv` - machine-readable claim/evidence/status index
+- `docs/PAPER_PROCESS_PLAYBOOK.md` - reusable paper-writing and experiment-audit process
+- `docs/EXPERIMENTS.md` - experimental protocol and fair-comparison rules
 - `paper/` - manuscript source and figures
 
 ## Citation

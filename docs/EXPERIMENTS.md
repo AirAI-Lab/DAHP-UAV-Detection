@@ -12,8 +12,8 @@
    `Lit.` (published number) or `Rep.` (our reproduction under the stated
    conditions). High-resolution literature numbers that could not be
    reproduced with released weights are marked separately.
-4. **Seed stability**: key configurations are run with 2-3 seeds; std is
-   reported next to the mean.
+4. **Seed stability**: key volume controls use five seeds; targeted union is
+   being extended from three to five seeds. Report n, mean, and std.
 5. **No inference-time modification** for the proposed method: DAHP changes
    only training data and training-time configuration.
 
@@ -26,8 +26,8 @@ difference dAP as a function of resolution characterizes the regime:
 - 640: dAP ~ +0.2 (learnability lower bound; tail objects unresolvable)
 - 960: dAP ~ +3.2 (under-fitted; sampling strongly positive-sum)
 - 1280: dAP ~ 0 (saturated; reallocation is zero-sum)
-- 1600: dAP ~ +1.0 (sweet spot used in the paper)
-- 1920: dAP ~ +3.8 (exposure-limited; doubling per-epoch exposure rescues)
+- 1600: same-epoch dAP +0.78 on the matched YOLOv8m-P2 family; md100 decomposition is random volume +0.36 and targeted residual +0.18
+- 1920: same-epoch dAP +3.83, but the 120-epoch exposure-matched residual is +0.49 native / +0.42 md100 (+0.92 APs)
 
 ## UAVDT transfer
 
@@ -47,3 +47,13 @@ matching the regime prediction.
 
 All latency numbers: single RTX 3090, batch 1, FP16, conf 0.25, 50 measured
 images after 10 warmup images (`scripts/bench_fps.py`).
+
+## Current completion status
+
+Completed: modern YOLO11/YOLO12/YOLO26 baselines, complete YOLOv8l/P2 ladder,
+1920 exposure-matched control, five random-volume seeds, UAVDT transfer, and
+online two-arm prediction.
+
+Pending final insertion: targeted-union seeds 4--5, exact 1280 union/random
+controls, and the RT-DETR union cross-family arm. D-FINE and RT-DETRv2 remain
+optional reviewer-relevant baselines if compute permits.
