@@ -18,8 +18,8 @@ after volume effects are controlled.
 |---|---|---|---|---|---|
 | RQ1 | Does scale pathology dominate baseline behavior? | 85.3% <32 px; complete YOLOv8l vs P2 ladder at 640/1280/1600 | Same detector family and native/md300 evaluator | **Supported** | None |
 | RQ2 | Are long tail and structural confusion measurable from labels only? | 45:1 ratio, 23 high-similarity pairs, van/truck axis; UAVDT profile | Label-only profiler verified against paper formula | **Supported** | Keep code/formula/figure synchronized |
-| RQ3 | Does rebalancing effectiveness depend on regime? | 640/960/1600/1920 arms; online probe r=0.983 | Matched detector, epochs, and evaluation | **Mostly supported** | Exact 1280 union/random controls running |
-| RQ4 | Is the gain caused by volume/exposure or targeted sampling? | 1600 md100: R 36.55, random 36.91, targeted 37.09; 1920 exposure-matched control | Volume-matched random controls and 120-epoch base control | **Partially supported** | Targeted arm n=3 now; finish n=5 |
+| RQ3 | Does rebalancing effectiveness depend on regime? | 640/960/1600/1920 arms; exact 1280 triplet 34.63/34.72/35.12 md100; online probe r=0.983 | Matched detector, epochs, and evaluation; exact 1280 uses one evaluator for all arms | **Supported with single-seed 1280 caveat** | Optionally replicate exact 1280 triplet |
+| RQ4 | Is the gain caused by volume/exposure or targeted sampling? | Exact 1280: volume +0.09, targeted +0.40; 1600 md100: R 36.55, random 36.91, targeted 37.09; 1920 exposure-matched control | Volume-matched random controls and 120-epoch base control | **Partially supported** | Finish targeted n=5 at 1600; exact 1280 is single-seed |
 | RQ5 | Is the principle predictive rather than post hoc? | 30-epoch two-arm probe, r=0.983, 5/5 separation | Uses only early epochs; failed single-arm control disclosed | **Supported** | Optional prospective decision simulation |
 | RQ6 | Does the policy transfer across datasets? | UAVDT union +0.69 AP, tail +1.69; frequency-only ineffective | Same profiler and recipe, no retuning | **Supported** | None unless more datasets requested |
 | RQ7 | Is the policy detector-family independent? | RT-DETR base complete; RT-DETR union in progress | Same 640 px / 100 ep budget | **Pending** | Finish and evaluate RT-DETR union |
@@ -36,7 +36,7 @@ after volume effects are controlled.
 | Paper/code formula mismatch | Equation, profiler, verification script, and figure use 0.6 AR + 0.4 scale structural similarity | Strong | Keep verification result in release |
 | P2/resolution policy mismatch | Paper ladder and code ladder aligned; architecture ladder complete | Strong | None |
 | Principle is retrospective | Changed from law to principle; online two-arm probe added | Strong | Optional prospective simulation |
-| Exposure/capacity/learnability confounded | 640 learnability, 1920 exposure matching, complete capacity ladder | Strong | Finish exact 1280 controls |
+| Exposure/capacity/learnability confounded | 640 learnability, exact 1280 volume/targeted decomposition, 1920 exposure matching, complete capacity ladder | Strong | Keep protocols separated |
 | SOTA claim too strong | Removed unpublished high-res RemDet claim; wording is strongest reproduced comparator | Strong | Keep literature rows separate |
 | Modern baselines missing | YOLO11/12/26 and RT-DETR-L included | Moderate | Add D-FINE/RT-DETRv2 if required |
 | Too few seeds | Random n=5; targeted n=3 currently | Moderate | Two targeted seeds running |
@@ -54,8 +54,9 @@ after volume effects are controlled.
    tail performance remains unchanged.
 2. **Volume-driven rescue.** At 960 px, union gives +3.15 AP and the volume
    component dominates.
-3. **Saturated behavior.** The current 1280 proxy is approximately zero; exact
-   controls are pending.
+3. **Volume-saturated behavior.** Exact 1280 controls give base/random/union =
+   34.63/34.72/35.12 md100 AP: random volume is nearly neutral, while targeted
+   union retains a +0.40 AP residual.
 4. **Intermediate positive-sum window.** At 1600 px, random duplication and
    targeted union both improve md100 AP. Current decomposition: volume +0.36,
    targeted +0.18.
@@ -68,7 +69,7 @@ after volume effects are controlled.
 | Criterion | Verdict | Reason |
 |---|---|---|
 | Theoretically coherent | Yes | Learnability, exposure headroom, capacity, and measured controls are separated |
-| Empirically supported | Mostly | Four of five resolution cells are strong; exact 1280 controls pending |
+| Empirically supported | Mostly | All five resolution cells have controls; exact 1280 is one seed per arm |
 | Predictive | Yes | Online two-arm probe r=0.983 |
 | Mechanistic | Mostly | Volume and exposure controls separate causes |
 | Generalization | Partial | Cross-dataset yes; detector-family independence pending |
@@ -117,16 +118,16 @@ after volume effects are controlled.
 - [x] Online regime prediction
 - [x] 1920 exposure-matched control
 - [x] Five-seed random-volume control
+- [x] Exact 1280 base/random/union controls
+- [x] Fig. 8 regenerated with the exact 1280 decomposition
 - [x] Dual evaluation protocols
 - [x] Public repository and manuscript synchronization
 
 ### Must finish before calling the revision complete
 
 - [ ] Targeted union n=5
-- [ ] Exact 1280 union and random controls
 - [ ] RT-DETR union cross-family result
 - [ ] Final attribution table after all n=5 seeds
-- [ ] Final regime matrix and Fig. 8 after exact 1280 cell
 - [ ] Machine-readable release of final evaluation JSON/configs
 
 ### Strongly recommended if time permits
@@ -144,6 +145,7 @@ after volume effects are controlled.
 | DAHP-M beats reproduced YOLO26-L at 640 | Yes | 26.11 vs 24.90 md100 under identical validation protocol |
 | DAHP-L beats strongest reproduced UAV detector under our protocol | Yes | 38.16 vs 29.90 md100 with disclosed resolution/capacity policy |
 | Union causes +3.83 at 1920 | Not alone | Same-epoch gain is +3.83; exposure-matched residual is +0.42 md100 |
+| Exact 1280 union beats random | Yes, with seed disclosure | +0.40 md100 AP over random in a one-seed-per-arm matched triplet |
 | Targeted union significantly beats random | Not yet | Directionally +0.18 with n=3; wait for n=5 |
 | Detector-family independence | Not yet | RT-DETR union pending |
 | Official VisDrone SOTA | No | Validation-set protocol only |

@@ -25,7 +25,9 @@ difference dAP as a function of resolution characterizes the regime:
 
 - 640: dAP ~ +0.2 (learnability lower bound; tail objects unresolvable)
 - 960: dAP ~ +3.2 (under-fitted; sampling strongly positive-sum)
-- 1280: dAP ~ 0 (saturated; reallocation is zero-sum)
+- 1280: exact same-evaluator base/random/union = 34.63/34.72/35.12 md100 AP;
+  volume is nearly saturated (+0.09), while targeted union retains +0.40 over
+  random (volume-saturated, not strictly zero-sum)
 - 1600: same-epoch dAP +0.78 on the matched YOLOv8m-P2 family; md100 decomposition is random volume +0.36 and targeted residual +0.18
 - 1920: same-epoch dAP +3.83, but the 120-epoch exposure-matched residual is +0.49 native / +0.42 md100 (+0.92 APs)
 
@@ -39,7 +41,9 @@ matching the regime prediction.
 ## Negative results (disclosed in the paper)
 
 - Pure tiled/sliced inference on full-image-trained models: -2.3 to -2.6 AP.
-- Frequency-only sampling at 1280: ~0 gain (saturated regime).
+- Frequency-only sampling at 1280: ~0 gain in the legacy native series; the
+  exact md100 triplet above separates volume saturation from the targeted
+  residual.
 - Loss-space interventions (EQLv2-style reweighting) on strong baselines:
   approximately zero-sum at saturation.
 
@@ -51,9 +55,8 @@ images after 10 warmup images (`scripts/bench_fps.py`).
 ## Current completion status
 
 Completed: modern YOLO11/YOLO12/YOLO26 baselines, complete YOLOv8l/P2 ladder,
-1920 exposure-matched control, five random-volume seeds, UAVDT transfer, and
-online two-arm prediction.
+1920 exposure-matched control, five random-volume seeds, exact 1280
+base/random/union controls, UAVDT transfer, and online two-arm prediction.
 
-Pending final insertion: targeted-union seeds 4--5, exact 1280 union/random
-controls, and the RT-DETR union cross-family arm. D-FINE and RT-DETRv2 remain
-optional reviewer-relevant baselines if compute permits.
+Pending final insertion: targeted-union seeds 4--5, batch-matched RT-DETR
+base/union, and the running D-FINE / RT-DETRv2 baselines.

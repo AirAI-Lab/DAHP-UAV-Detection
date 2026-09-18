@@ -28,7 +28,7 @@
 \maketitle
 
 \begin{abstract}
-Object detection in unmanned aerial vehicle (UAV) imagery is governed by three coupled distributional pathologies: extreme scale imbalance (85.3\% of instances below $32{\times}32$ pixels at a 640-px reference), severe long-tailedness (a $45{:}1$ head-to-tail class ratio), and dense inter-class structural confusion. Prevailing responses are architectural---feature-enhancement modules, auxiliary heads, specialized backbones---yet controlled evidence for their benefit on strong baselines remains scarce. We first present a negative-result study spanning seven feature-module generations (nine matched 100-epoch trainings, fully audited in Appendix Table~\ref{tab:negative}), showing that such modules consistently degrade localization (validation DFL $+0.05$--$0.08$) and never improve $\map_{50\text{-}95}$ ($-0.7$ to $+0.1$~\ap) on strong baselines. We then introduce a data-driven, strictly non-invasive alternative: a label-only profiling engine (DAHP) quantifies the three pathologies and maps them to training-time policies---tail-class and confusion-axis oversampling, effective-pixel configuration, and optional weighted-box fusion. Crucially, we identify and formalize an \emph{exposure-aware regime-dependent rebalancing principle}: in under-fitted regimes, volume dominates; in saturated regimes, rebalancing is approximately zero-sum; in intermediate regimes, volume and targeted reallocation are both positive; and in exposure-limited regimes, an apparent sampling gain largely reflects training exposure. At 1920\,px, exposure matching reduces an apparent $+3.83$-\ap{} gain to a $+0.42$-\ap{} md100 residual concentrated on small objects. On \visdrone{}, the recipe reaches $40.06$~\ap{} (native protocol) and $38.16$~\ap{} (standard COCO protocol), outperforming the strongest reproduced UAV detector baseline by $8.3$~\ap{} under our evaluation protocol with $58\%$ of its parameters and no architectural modification introduced by the rebalancing policy itself, and improving the baseline by $+3.9$~\ap{} ($+10.7\%$) with tail-class \ap{} rising from $0.29$ to $0.331$. Cross-dataset transfer to \uavdt{} reproduces the factor attribution, and the detector runs at $24.5$~FPS on a single desktop RTX~3090 GPU at $1600$\,px.
+Object detection in unmanned aerial vehicle (UAV) imagery is governed by three coupled distributional pathologies: extreme scale imbalance (85.3\% of instances below $32{\times}32$ pixels at a 640-px reference), severe long-tailedness (a $45{:}1$ head-to-tail class ratio), and dense inter-class structural confusion. Prevailing responses are architectural---feature-enhancement modules, auxiliary heads, specialized backbones---yet controlled evidence for their benefit on strong baselines remains scarce. We first present a negative-result study spanning seven feature-module generations (nine matched 100-epoch trainings, fully audited in Appendix Table~\ref{tab:negative}), showing that such modules consistently degrade localization (validation DFL $+0.05$--$0.08$) and never improve $\map_{50\text{-}95}$ ($-0.7$ to $+0.1$~\ap) on strong baselines. We then introduce a data-driven, strictly non-invasive alternative: a label-only profiling engine (DAHP) quantifies the three pathologies and maps them to training-time policies---tail-class and confusion-axis oversampling, effective-pixel configuration, and optional weighted-box fusion. Crucially, we identify and formalize an \emph{exposure-aware regime-dependent rebalancing principle}: in under-fitted regimes, volume dominates; in volume-saturated regimes, random duplication is nearly neutral while a smaller targeted residual can remain; in intermediate regimes, volume and targeted reallocation are both positive; and in exposure-limited regimes, an apparent sampling gain largely reflects training exposure. At 1920\,px, exposure matching reduces an apparent $+3.83$-\ap{} gain to a $+0.42$-\ap{} md100 residual concentrated on small objects. On \visdrone{}, the recipe reaches $40.06$~\ap{} (native protocol) and $38.16$~\ap{} (standard COCO protocol), outperforming the strongest reproduced UAV detector baseline by $8.3$~\ap{} under our evaluation protocol with $58\%$ of its parameters and no architectural modification introduced by the rebalancing policy itself, and improving the baseline by $+3.9$~\ap{} ($+10.7\%$) with tail-class \ap{} rising from $0.29$ to $0.331$. Cross-dataset transfer to \uavdt{} reproduces the factor attribution, and the detector runs at $24.5$~FPS on a single desktop RTX~3090 GPU at $1600$\,px.
 \end{abstract}
 
 \begin{IEEEkeywords}
@@ -52,7 +52,7 @@ The dominant community response has been architectural: density-guided cropping 
 \subsection{Contributions}
 \begin{enumerate}
 \item \textbf{A controlled negative-result study} (seven module generations, $20+$ audited trainings; Table~\ref{tab:negative}): feature-level interventions systematically elevate validation DFL and fail to improve $\map_{50\text{-}95}$ on strong baselines, including head-level decoupling attempts (Sec.~\ref{sec:negative}).
-\item \textbf{The regime-dependent rebalancing principle}: using an epoch-matched resolution ladder and factor-isolated sampling controls, we formalize three regimes in which rebalancing behaves as volume-driven tail rescue, positive-sum augmentation, or zero-sum reallocation, yielding an operational decision rule (Sec.~\ref{sec:law}).
+\item \textbf{The regime-dependent rebalancing principle}: using an epoch-matched resolution ladder and factor-isolated sampling controls, we formalize regimes in which rebalancing behaves as volume-driven tail rescue, volume-saturated reallocation with a bounded targeted residual, positive-sum augmentation, or an exposure-limited apparent gain, yielding an operational decision rule (Sec.~\ref{sec:law}).
 \item \textbf{A non-invasive, data-driven framework (DAHP)}: a label-only profiler emits resolution/backbone configuration, tail and confusion-axis oversampling, and optional fusion policies---without touching network, losses, or inference. The identical engine transfers zero-shot to \uavdt{} and correctly predicts the factor attribution there (Sec.~\ref{sec:method}, \ref{sec:uavdt}).
 \item \textbf{Protocol-faithful comparator evidence} across 24 detector configurations, including reproduced YOLO11/YOLO12/YOLO26, RT-DETR, and UAV-specific detectors. Exposure-matched and volume-matched controls separate architecture, data volume, and targeted rebalancing; the P2 ladder is re-evaluated under one native protocol, and the 1920-\ap{} gain is decomposed into exposure and residual components (Sec.~\ref{sec:main}--\ref{sec:attribution}).
 \end{enumerate}
@@ -67,7 +67,7 @@ TPH-YOLOv5 \cite{tph} adds transformer prediction heads for small objects; \remd
 SAHI \cite{sahi} fine-tunes on tiles to align train--test scale distributions. Our SAFT experiments confirm the alignment is necessary (pure sliced inference is $-2.3$ to $-2.6$~\ap), but also show that a naive mixture underperforms pure test-time augmentation ($37.76$ vs.\ $37.96$), motivating our choice of full-image training at matched effective pixels instead.
 
 \subsection{Long-Tailed Detection}
-Loss-space methods---class-balanced reweighting \cite{cbloss}, EQLv2 \cite{eqlv2}, Seesaw \cite{seesaw}, balanced group softmax \cite{bge}, and distribution-balanced losses \cite{dbloss}---modify gradients; data-space methods such as repeat-factor sampling \cite{rfs} and aerial chip augmentation \cite{amrnet} replicate or synthesize tail examples. Our negative results extend to loss-space interventions on strong baselines, and the regime principle (Sec.~\ref{sec:law}) explains why: in saturated regimes any reweighting is approximately zero-sum. Unlike prior work, we characterize \emph{when} rebalancing is positive-sum, using the training regime as the moderator.
+Loss-space methods---class-balanced reweighting \cite{cbloss}, EQLv2 \cite{eqlv2}, Seesaw \cite{seesaw}, balanced group softmax \cite{bge}, and distribution-balanced losses \cite{dbloss}---modify gradients; data-space methods such as repeat-factor sampling \cite{rfs} and aerial chip augmentation \cite{amrnet} replicate or synthesize tail examples. Our negative results extend to loss-space interventions on strong baselines, and the regime principle (Sec.~\ref{sec:law}) explains why: once the volume channel is saturated, indiscriminate reweighting is approximately zero-sum. Unlike prior work, we characterize \emph{when} rebalancing is positive-sum, using the training regime as the moderator.
 
 \subsection{Scale and Resolution}
 Resolution is the largest single lever in UAV detection (our historical ladders: $+8.8$~\ap{} from $640{\to}1280$). QueryDet \cite{querydet} and CEASC \cite{ceasc} accelerate high-resolution inference through sparse-query and context-enhanced adaptive sparse convolution, respectively; Gold-YOLO \cite{goldyolo} and RT-DETR \cite{rtdetr} advance general-purpose accuracy. We contribute an epoch-matched, \emph{non-monotonic} resolution curve peaking at $1600$\,px with a $2.8$-\ap{} drop at $1920$\,px under fixed compute---to our knowledge not previously documented under controlled epochs.
@@ -118,7 +118,8 @@ Define the epoch-wise aggregate gain $g(e)=\map(e)-\map(e{-}1)$ and its windowed
 with $\tau_g$ a small threshold (0.1~pt, $W{=}10$); otherwise it is \emph{intermediate}. Let $h$ denote \emph{data-exposure headroom}, estimated by the gain of a volume-matched random-duplication arm, and let $\Delta_{\mathrm{vol}}$ and $\Delta_{\mathrm{dir}}$ denote the aggregate-\ap{} contributions of pure volume and targeted class reallocation. Define $\Delta_{\mathrm{se}}$ and $\Delta_{\mathrm{m}}$ as the same-epoch and exposure-matched union gains. Our controlled observations support:
 \begin{align}
 \text{P1 (under-fit)} &\Rightarrow \tfrac{\Delta_{\mathrm{vol}}}{\Delta_{\mathrm{vol}}+\Delta_{\mathrm{dir}}}\approx0.77,\ \Delta\ap_{\mathrm{tail}}>0;\\
-\text{P2 (saturated)} &\Rightarrow \Delta\ap_{\mathrm{agg}}\approx0,\ \exists(c)\!:\!\Delta\ap_c<0;\\
+\text{P2 (volume-sat.)} &\Rightarrow \Delta_{\mathrm{vol}}\approx0,\ 0\le\Delta_{\mathrm{dir}}\lesssim0.5,\\
+&\qquad \exists(c)\!:\!\Delta\ap_c<0;\\
 \text{P3 (intermediate)} &\Rightarrow 0<\Delta\ap_{\mathrm{agg}}\le 1.0,\ \Delta_{\mathrm{vol}},\Delta_{\mathrm{dir}}>0;\\
 \text{P4 (exposure-lim.)} &\Rightarrow \Delta_{\mathrm{se}}\gg\Delta_{\mathrm{m}},\ \Delta\ap_s^{(\mathrm{m})}>0.
 \end{align}
@@ -129,7 +130,7 @@ The principle yields the operational rule: \emph{profile whether a plateau is ca
 DAHP is deliberately label-only: profiling a 6{,}471-image training set requires $O(N)$ label parsing ($<1$\,s on CPU) and $O(K^2)$ pairwise statistics; the policy mapping itself is constant-time. No images are decoded, no gradients are computed, and no detector forward pass is needed. This contrasts with profiling approaches that require model inference (e.g., error-driven confusion mining), and it makes the engine trivially portable---the same code produced both the VisDrone and UAVDT policies with zero dataset-specific edits.
 
 \subsubsection{Why data-space rather than loss-space}
-Long-tailed detection conventionally intervenes in the loss (reweighting, logit adjustment). Our negative results (Sec.~\ref{sec:negative}) and the regime principle jointly explain why this is fragile on strong UAV baselines: in saturated regimes, any reweighting is approximately zero-sum across classes, so its aggregate effect vanishes while per-class variance increases. Data-space duplication, by contrast, interacts with the data-loading and augmentation pipeline: it multiplies \emph{epochs of exposure} for tail images under identical loss weights, and---critically---its volume component still helps in under-fitted regimes where loss reweighting cannot (no additional information is injected). The union policy of Eq.~\eqref{eq:weight} is therefore the regime-robust choice.
+Long-tailed detection conventionally intervenes in the loss (reweighting, logit adjustment). Our negative results (Sec.~\ref{sec:negative}) and the regime principle jointly explain why this is fragile on strong UAV baselines: once the volume channel is saturated, indiscriminate reweighting is approximately zero-sum across classes, so its aggregate effect vanishes while per-class variance increases. Data-space duplication, by contrast, interacts with the data-loading and augmentation pipeline: it multiplies \emph{epochs of exposure} for tail images under identical loss weights, and---critically---its volume component still helps in under-fitted regimes where loss reweighting cannot (no additional information is injected). The union policy of Eq.~\eqref{eq:weight} is therefore the regime-robust choice.
 
  \subsubsection{Configuration nomenclature}
 Throughout the paper we use a systematic configuration shorthand. \textbf{R} denotes the effective-pixel policy (resolution/backbone selection from the regime curve); \textbf{T} the tail-class oversampling of $\mathcal{T}$; \textbf{C} the confusion-axis oversampling of $\mathcal{A}$; and \textbf{B} the backbone scale-up (v8m$\to$v8l). The shorthand composes: e.g., R$+$T$\cup$C applies resolution plus union oversampling. Two named models recur: \dahpM{} (YOLOv8m-P2@1600, R$+$T$\cup$C) and \dahpL{} (YOLOv8l-P2@1600, R$+$T$\cup$C)---the latter our single-model flagship---plus \dahpL{}-E7, the seven-model weighted-box-fusion ensemble. Architecture-decomposition controls are written $V_L$ (vanilla v8l, no P2 head) and $V_L{+}P_2$.
@@ -270,7 +271,7 @@ Table~\ref{tab:main} summarizes the reproduced and literature comparison. Agains
 \label{sec:attribution}
 \begin{table}[!t]
 \centering
-\caption{Factor attribution and component ablation. The $V_L$/DAHP-L block and exposure decomposition use COCO md100; the DAHP-component block uses the native/md300 training-selection protocol. All schedules are 100 epochs unless stated.}
+\caption{Factor attribution and component ablation. The $V_L$/DAHP-L block, exact-1280 controls, and 1600-px exposure decomposition use COCO md100; the DAHP-component block uses the native/md300 training-selection protocol. All schedules are 100 epochs unless stated. Protocol blocks are never mixed in a subtraction.}
 \label{tab:attribution}
 \resizebox{\columnwidth}{!}{\begin{tabular}{lccc}
 \toprule
@@ -280,7 +281,12 @@ $V_L$: v8l vanilla (no P2) & 35.93 & --- & 0.309 \\
 $V_L{+}P_2$ & 37.59 & $+1.66$ (head) & 0.322 \\
 \textbf{\dahpL{} $= V_L{+}P_2{+}$R$+$T$\cup$C} & \textbf{38.16} & $+0.57$ (data) & \textbf{0.331} \\
 \midrule
-\multicolumn{4}{l}{\emph{DAHP components (v8m-P2@1600)}}\\
+\multicolumn{4}{l}{\emph{Same-evaluator policy controls (v8m-P2)}}\\
+\midrule
+\multicolumn{4}{l}{\emph{Exact 1280 controls (md100, v8m-P2)}}\\
+Baseline & 34.63 & --- & 0.320 \\
+Random volume control & 34.72 & $+0.09$ (volume) & 0.317 \\
+\textbf{Targeted union} & \textbf{35.12} & $\mathbf{+0.40}$ (targeted) & \textbf{0.322} \\
 \midrule
 \multicolumn{4}{l}{\emph{Exposure decomposition (md100, v8m-P2@1600)}}\\
 R only & $36.55^{\pm.21}$ & --- & 0.339 \\
@@ -293,10 +299,11 @@ R$+$T (tail-only) & 38.58 & $+0.51$ & 0.315 \\
 R$+$C (confusion-only) & 38.68 & $+0.61$ & 0.317 \\
 \textbf{\dahpM{} (R$+$T$\cup$C)} & \textbf{38.82} & $+0.75$ & \textbf{0.318} \\
 \bottomrule
-\multicolumn{4}{l}{\footnotesize $^{\pm}$std over seeds: R only $n{=}3$; random control $n{=}5$; targeted union $n{=}3$ in the released audit; the random control is $n{=}5$.}
+\multicolumn{4}{l}{\footnotesize Exact-1280 values are one seed per arm under the same external evaluator. $^{\pm}$std over seeds at 1600\,px: R only $n{=}3$;}\\
+\multicolumn{4}{l}{\footnotesize random control $n{=}5$; targeted union currently $n{=}3$ and is being expanded to $n{=}5$.}
 \end{tabular}}
 \end{table}
-Table~\ref{tab:attribution} separates architecture, exposure, and targeted reallocation. Under md100, random volume duplication explains $+0.36$ of the $+0.54$-\ap{} R-only$\to$union gain; the targeted residual is $+0.18$~\ap{} and is accompanied by a tail-mean increase ($0.339\to0.346$). Thus the honest interpretation is not ``oversampling alone explains the gain: exposure is the larger component, while targeted union contributes a smaller directional residual. The native component ablation additionally shows that the union of tail and confusion axes outperforms either alone.
+Table~\ref{tab:attribution} separates architecture, exposure, and targeted reallocation. The exact 1280-px triplet revises the earlier zero-sum description: random duplication changes md100 \ap{} by only $+0.09$, whereas targeted union leaves a $+0.40$-\ap{} residual over the matched random control. The regime is therefore \emph{volume-saturated}, not strictly zero-sum. At 1600\,px, random volume duplication explains $+0.36$ of the $+0.54$-\ap{} R-only$\to$union gain; the targeted residual is $+0.18$~\ap{} and is accompanied by a tail-mean increase ($0.339\to0.346$). Thus the honest interpretation is not ``oversampling alone explains the gain: exposure is the larger component, while targeted union contributes a smaller directional residual. The native component ablation additionally shows that the union of tail and confusion axes outperforms either alone.
 
 \subsection{Regime Analysis}
 \label{sec:regime}
@@ -319,7 +326,7 @@ YOLOv8l (vanilla) & 23.21 & 33.76 & 37.94 \\
 \end{tabular}
 \end{table}
 
-The epoch-matched resolution ladder (@ep60) reads $960{\to}1280{\to}1600{\to}1920 = 30.09{\to}35.61{\to}37.68{\to}34.91$~\ap{}---non-monotonic, with a $2.8$-\ap{} drop beyond the peak (Fig.~\ref{fig:regime}). At $960$\,px (under-fitted), frequency sampling gains $+1.69$~\ap{} over a volume-matched control, decomposing as $77\%$ volume / $23\%$ targeted. At $1280$\,px (saturated), $\Delta\le0.05$~\ap{} with redistribution (bus $-2.4$, awning-tricycle $+1.9$). At $1600$\,px (intermediate), union sampling yields $+0.6$--$1.0$~\ap. These instantiate P1--P3 (Fig.~\ref{fig:mechanism}).
+The epoch-matched resolution ladder (@ep60) reads $960{\to}1280{\to}1600{\to}1920 = 30.09{\to}35.61{\to}37.68{\to}34.91$~\ap{}---non-monotonic, with a $2.8$-\ap{} drop beyond the peak (Fig.~\ref{fig:regime}). At $960$\,px (under-fitted), frequency sampling gains $+1.69$~\ap{} over a volume-matched control, decomposing as $77\%$ volume / $23\%$ targeted. At $1280$\,px, the exact same-evaluator triplet is $34.63/34.72/35.12$~\ap{} for base/random/union: the volume channel is saturated ($+0.09$), but targeted union retains $+0.40$~\ap{} with class redistribution (bus $-1.4$, awning-tricycle $+1.1$). At $1600$\,px (intermediate), union sampling yields $+0.6$--$1.0$~\ap. These instantiate P1--P3 (Fig.~\ref{fig:mechanism}).
 
 \subsubsection{Principle prediction test and refinement}
 \label{sec:lawtest}
@@ -327,18 +334,18 @@ The principle makes falsifiable predictions beyond the regimes where it was iden
 
 \paragraph{Online two-arm prediction}
 \label{sec:online}
-Fig.~\ref{fig:online} tests whether the principle can be applied \emph{before} the final result is known---the distinction between a predictive principle and an a-posteriori categorization. For each resolution we compute the best-checkpoint gap between the rebalanced arm and its matched base using only the first $E$ epochs. A 30-epoch probe already recovers the final ranking almost perfectly (Pearson $r{=}0.98$), and a simple threshold---probe gap $>2.5$~\ap{} at epoch 30---separates the positive-sum regimes (640: $2.71$, 960: $5.28$, 1600: $2.58$, 1920: $6.88$) from the saturated 1280-px regime (gap $1.95$, decaying to $\approx0$) in $5/5$ cases. We also report the negative control honestly: the single-run epoch-gain criterion $\bar g(E)$ alone does \emph{not} discriminate regimes online; the operative diagnostic is the two-arm \emph{exposure probe}, which is exactly what the exposure-headroom formulation predicts.
+Fig.~\ref{fig:online} tests whether the principle can be applied \emph{before} the final result is known---the distinction between a predictive principle and an a-posteriori categorization. For each resolution we compute the best-checkpoint gap between the rebalanced arm and its matched base using only the first $E$ epochs. A 30-epoch probe already recovers the final ranking almost perfectly (Pearson $r{=}0.98$), and a simple threshold---probe gap $>2.5$~\ap{} at epoch 30---separates the larger-gap regimes (640: $2.71$, 960: $5.28$, 1600: $2.58$, 1920: $6.88$) from the volume-saturated 1280-px regime (gap $1.95$, with the exact final targeted residual bounded at $+0.40$~md100 \ap) in $5/5$ cases. We also report the negative control honestly: the single-run epoch-gain criterion $\bar g(E)$ alone does \emph{not} discriminate regimes online; the operative diagnostic is the two-arm \emph{exposure probe}, which is exactly what the exposure-headroom formulation predicts.
 
 \begin{figure}[!t]
 \centering
 \includegraphics[width=\columnwidth]{figures_v2/fig9_online_regime.pdf}
-\caption{Online two-arm prediction test. (a) Best-checkpoint gap trajectories (rebalanced $-$ base) per resolution; (b) early probe gap versus final gain---a 30-epoch probe attains $r{=}0.98$ and a $2.5$-\ap{} threshold separates positive-sum from saturated regimes in $5/5$ cases.}
+\caption{Online two-arm prediction test. (a) Best-checkpoint gap trajectories (rebalanced $-$ base) per resolution; (b) early probe gap versus final gain---a 30-epoch probe attains $r{=}0.98$ and a $2.5$-\ap{} threshold separates larger-gap regimes from the volume-saturated 1280-px regime in $5/5$ cases.}
 \label{fig:online}
 \end{figure}
 
 \begin{table}[!t]
 \centering
-\caption{Union-sampling effect across the resolution--regime matrix on the same YOLOv8m-P2 detector family (native protocol, matched 60/100-epoch budgets per series). The effect tracks data-exposure headroom, not resolution alone.}
+\caption{Union-sampling effect across the resolution--regime matrix on the same YOLOv8m-P2 detector family (legacy native protocol, matched 60/100-epoch budgets per series). The effect tracks data-exposure headroom, not resolution alone. The exact same-evaluator 1280 triplet is reported separately in Table~\ref{tab:attribution} to avoid protocol mixing.}
 \label{tab:lawmatrix}
 \resizebox{\columnwidth}{!}{\begin{tabular}{lccccc}
 \toprule
@@ -348,11 +355,12 @@ Fig.~\ref{fig:online} tests whether the principle can be applied \emph{before} t
 +$+$union \ap & 27.48 & 33.41 & $\approx$36.2$^{c}$ & 38.85 & 39.50 \\
 base@120 (exposure-matched) & --- & --- & --- & --- & 39.01$^{d}$ \\
 \midrule
-+$\Delta$ (same epoch) & $+0.21$ & $+3.15$ & $\approx0$ & $+0.78$ & $+3.83$ \\
++$\Delta$ (same epoch) & $+0.21$ & $+3.15$ & $+0.05^{c}$ & $+0.78$ & $+3.83$ \\
 +$\Delta$ (exposure-matched) & --- & --- & --- & --- & $+0.49$ \\
-+regime & unlearn. & under-fit & saturated & sweet & expos.-lim. \\
++regime & unlearn. & under-fit & volume-sat. & sweet & expos.-lim. \\
 \bottomrule
-\multicolumn{6}{l}{\footnotesize $^{c}$frequency-sampling proxy at 1280 (36.25 vs.\ 36.20); union at 640/960/1600/1920. $^{d}$md100: base@120 $=37.51$, union@60 $=37.93$ ($+0.42$); \aps{} $29.54\to30.46$ ($+0.92$).}
+\multicolumn{6}{l}{\footnotesize $^{c}$legacy frequency-sampling proxy at 1280 (36.25 vs.\ 36.20); exact 1280 base/random/union is $34.63/34.72/35.12$}\\
+\multicolumn{6}{l}{\footnotesize md100. $^{d}$md100: base@120 $=37.51$, union@60 $=37.93$ ($+0.42$); \aps{} $29.54\to30.46$ ($+0.92$).}
 \end{tabular}}
 \end{table}
 
@@ -429,12 +437,12 @@ Fig.~\ref{fig:radar} contrasts per-class \ap{} between the baseline and \dahpL{}
 \begin{figure*}[!t]
 \centering
 \includegraphics[width=\textwidth]{figures_v2/fig8_law_matrix.pdf}
-\caption{The five-point resolution--sampling matrix. (a) base vs.\ union sampling across resolutions; (b) the same-epoch effect tracks \emph{data-exposure headroom}, not resolution. The 1920 bar is an apparent same-epoch gain; the exposure-matched residual is $+0.49$ native / $+0.42$ md100 \ap.}
+\caption{The five-point resolution--sampling matrix. (a) Base vs.\ union sampling across resolutions under the legacy native protocol; (b) the same-epoch effect tracks \emph{data-exposure headroom}, not resolution; (c) the exact same-evaluator 1280-px controls separate a nearly saturated volume channel ($+0.09$ md100) from the targeted residual ($+0.40$ md100). The 1920 bar is an apparent same-epoch gain; the exposure-matched residual is $+0.49$ native / $+0.42$ md100 \ap.}
 \label{fig:lawmatrix}
 \end{figure*}\begin{figure*}[!t]
 \centering
 \includegraphics[width=\textwidth]{figures_v2/fig7_regime_mechanism.pdf}
-\caption{Mechanistic evidence for the regime principle: (a) volume-dominated tail rescue at 960\,px; (b) zero-sum reallocation at 1280\,px; (c) positive-sum window at 1600\,px.}
+\caption{Mechanistic evidence for the regime principle: (a) volume-dominated tail rescue at 960\,px; (b) volume-saturated reallocation with a bounded targeted residual at 1280\,px; (c) positive-sum window at 1600\,px.}
 \label{fig:mechanism}
 \end{figure*}
 
@@ -443,7 +451,7 @@ Fig.~\ref{fig:radar} contrasts per-class \ap{} between the baseline and \dahpL{}
 All disclosed: full YOLO12-L/YOLO26-L@640 baselines (23.67/24.90~\ap); earlier YOLO26-family probes at 1280 ($25.6$--$33.5$~\ap); pure tiled inference on full-image models ($-2.3$ to $-2.6$); SAFT mixing ($37.76<$ pure TTA $37.96$); frequency sampling at $1280$ ($36.25\approx$ baseline); naive allocator ($38.51<$ union $38.85$); seven feature-module generations ($-0.7$ to $+0.1$~\ap, val DFL $+0.05$--$0.08$; Table~\ref{tab:negative}).
 
 \section{Discussion}
-The regime principle implies that data-level rebalancing is not a free lunch but an exposure-indexed tool: profile first (labels suffice), then choose resolution/capacity to establish headroom before rebalancing. Two boundary conditions deserve emphasis. At 640\,px, tail objects are simply unlearnable at the available stride, so duplication cannot help---the principle has a lower bound set by learnability, not by sampling. At $1920$\,px, an apparently saturated run was in fact exposure-limited: doubling per-epoch exposure produced an apparent $+3.83$-\ap{} gain, but training the base for an exposure-matched 120 epochs recovered most of it, leaving a $+0.42$-\ap{} md100 residual concentrated on small objects. Practitioners should therefore diagnose \emph{why} a run has plateaued (capacity vs.\ exposure) before attributing a gain to rebalancing. In deployment terms, the practical recipe is: raise effective pixels until the exposure budget is the binding constraint, then rebalance. Limitations: (i) the principle is characterized on two UAV datasets and one detector family---though the factor-isolated design and cross-dataset replication strengthen external validity; (ii) the compute-matched \remdet{} retrain bounds what any single 24-GB GPU achieves with that architecture at $1600$\,px but does not measure its 8-GPU recipe; (iii) the WBF ensemble trades parameters for accuracy and is reported separately from the single-model claim.
+The regime principle implies that data-level rebalancing is not a free lunch but an exposure-indexed tool: profile first (labels suffice), then choose resolution/capacity to establish headroom before rebalancing. Three boundary conditions deserve emphasis. At 640\,px, tail objects are simply unlearnable at the available stride, so duplication cannot help---the principle has a lower bound set by learnability, not by sampling. At $1280$\,px, the volume channel is already saturated, but targeted union still retains a $+0.40$-\ap{} md100 residual over random duplication; saturation does not imply that every component of rebalancing is zero. At $1920$\,px, an apparently saturated run was in fact exposure-limited: doubling per-epoch exposure produced an apparent $+3.83$-\ap{} gain, but training the base for an exposure-matched 120 epochs recovered most of it, leaving a $+0.42$-\ap{} md100 residual concentrated on small objects. Practitioners should therefore diagnose \emph{why} a run has plateaued (capacity vs.\ exposure) before attributing a gain to rebalancing. In deployment terms, the practical recipe is: raise effective pixels until the exposure budget is the binding constraint, then rebalance. Limitations: (i) the principle is characterized on two UAV datasets and one detector family---though the factor-isolated design and cross-dataset replication strengthen external validity; (ii) the compute-matched \remdet{} retrain bounds what any single 24-GB GPU achieves with that architecture at $1600$\,px but does not measure its 8-GPU recipe; (iii) the WBF ensemble trades parameters for accuracy and is reported separately from the single-model claim.
 
 \section{Conclusion}
 A label-only profiler, a regime-indexed rebalancing principle, and a strictly non-invasive recipe deliver the strongest reproduced results under our protocol on \visdrone{} ($40.06$~\ap{} native / $38.16$~\ap{} COCO protocol; $39.61$~\ap{} fused), transferable gains on \uavdt{}, and a documented failure map of the architectural alternative---with $58\%$ of the parameters of the strongest published comparator and zero inference-time modification.

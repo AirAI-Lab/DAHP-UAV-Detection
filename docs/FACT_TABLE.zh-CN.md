@@ -43,6 +43,9 @@
 | 640 baseline batch | 8 |
 | 1600 YOLOv8m-P2 controls | batch 2 |
 | RT-DETR-L baseline | 640 px, batch 4, 100 epochs |
+| RT-DETR-L batch 匹配对照 | 640 px, batch 2, 100 epochs；运行中 |
+| 960 px batch 匹配 base | 960 px, batch 2, 60 epochs；运行中 |
+| D-FINE-M baseline | 640 px, total batch 8, 100 epochs；运行中 |
 | 种子策略 | 报告 n、均值和标准差；样本不足不使用显著性表述 |
 | 服务器恢复 | checkpoint resume + reboot-safe queue scripts |
 
@@ -88,6 +91,21 @@
 | YOLOv8l-P2 | 27.21 | 37.96 | 39.04 |
 | P2 gain | +4.0 | +4.2 | +1.1 |
 
+### 1280 px exact regime controls
+
+三条 arm 均使用同一 external COCO evaluator、1280 px 输入、v8m-P2、
+100 epochs、每 arm 一个 seed。不得与 legacy native/md300 law-matrix 单元格直接相减。
+
+| Arm | md100 AP | md100 AP50 | md100 APs | native AP | Tail mean |
+|---|---:|---:|---:|---:|---:|
+| Base | 34.6296 | 54.8244 | 26.2765 | 34.6859 | 0.3202 |
+| Random volume | 34.7233 | 55.0512 | 26.7730 | 34.7770 | 0.3168 |
+| Targeted union | 35.1223 | 55.4333 | 26.9803 | 35.1772 | 0.3221 |
+
+md100 分解：base→random 的 volume效应为 `+0.0937 AP`；random→union 的
+targeted residual 为 `+0.3990 AP`。因此该 regime 是 **volume-saturated**，
+不是严格 zero-sum。
+
 ### 1600 px 曝光归因，md100
 
 | Arm | n | AP | Tail mean |
@@ -132,9 +150,8 @@
 | Pending 项 | 当前用途 | 最终 claim 前必须完成 |
 |---|---|---|
 | Targeted union seeds 4--5 | 将 targeted arm 扩展到 n=5 | 100 epochs + md100 评估 |
-| Exact 1280 union/random controls | 替换 regime matrix 中的 frequency proxy | 100 epochs + md100/native 评估 |
-| RT-DETR union arm | detector-family independence | 收敛训练并统一评估 |
-| D-FINE / RT-DETRv2 baselines | optional modern DETR comparison | 在披露预算下训练，或明确排除 |
+| RT-DETR batch-2 base 与 union arm | detector-family independence | 收敛训练并统一评估 |
+| D-FINE / RT-DETRv2 baselines | reviewer 相关 modern DETR comparison | 完成披露预算训练并适配 evaluator 输出 |
 | VisDrone test-dev | 外部 benchmark claim | challenge-server 评估；否则保留 val limitation |
 | Expanded FPS protocol | 更强效率证据 | 预处理/推理/后处理分解，至少 200 张 |
 
@@ -145,6 +162,7 @@
 | 无协议条件的 state of the art by X AP | strongest reproduced comparator under our protocol |
 | 整个系统 zero architecture change | rebalancing policy 本身不引入结构修改 |
 | rebalancing law | exposure-aware regime-dependent rebalancing principle |
+| 1280 是 zero-sum | 1280 是 volume-saturated；exact targeted residual 为 random 之上 +0.40 md100 |
 | union 在 1920 获得 +3.83 AP | same-epoch gain +3.83；曝光匹配 residual +0.42 md100 |
 | edge real-time | desktop RTX 3090 real-time |
 | n<5 时 statistically significant | 报告 n、mean、std 和 paired differences；合适时使用 CI |

@@ -16,7 +16,7 @@
 |---:|---:|---|
 | 640 | +0.21 | learnability 下界；目标相对 stride 过小 |
 | 960 | +3.15 | under-fitted；额外曝光可以转化为学习收益 |
-| 1280 | 约 0 | saturated；类别重分配近似零和 |
+| 1280 | exact 同 evaluator base/random/union = 34.63/34.72/35.12 md100 AP | volume 接近饱和（+0.09），targeted union 在 random 之上保留 +0.40；是 volume-saturated，不是严格零和 |
 | 1600 | +0.78 | intermediate；volume 与 targeted 均有正贡献 |
 | 1920 | +3.83 | exposure-limited；same-epoch 增益主要来自曝光 |
 
@@ -56,7 +56,7 @@ matched residual    native +0.49 / md100 +0.42 / APs +0.92
 ## 负结果披露
 
 - 对 full-image 训练模型直接使用切片推理：`-2.3` 到 `-2.6 AP`。
-- 1280 px frequency-only sampling：接近 0 增益，符合饱和 regime。
+- 1280 px frequency-only sampling：legacy native 系列接近 0；上方 exact md100 triplet 进一步区分 volume 饱和与 targeted residual。
 - 简单 allocator 低于 union：`38.51 < 38.85` native AP。
 - 七代 feature-module 实验：`-0.7` 到 `+0.1 AP`，验证 DFL 增加 `+0.05--0.08`。
 - YOLO12-L / YOLO26-L@640 已完成：`23.67 / 24.90 AP`，低于 DAHP-M 的 `26.11 AP`。
@@ -67,6 +67,6 @@ matched residual    native +0.49 / md100 +0.42 / APs +0.92
 
 ## 当前完成状态
 
-已完成：YOLO11/YOLO12/YOLO26 modern baselines、完整 YOLOv8l/P2 ladder、1920 曝光匹配控制、5 个 random-volume 种子、UAVDT 迁移和在线 two-arm 预测。
+已完成：YOLO11/YOLO12/YOLO26 modern baselines、完整 YOLOv8l/P2 ladder、1920 曝光匹配控制、5 个 random-volume 种子、exact 1280 base/random/union controls、UAVDT 迁移和在线 two-arm 预测。
 
-待最终回填：targeted-union 第 4--5 个种子、exact 1280 union/random controls、RT-DETR union 跨 detector family 结果。D-FINE 和 RT-DETRv2 是算力允许时建议补充的 modern DETR baselines。
+待最终回填：targeted-union 第 4--5 个种子、batch 匹配的 RT-DETR base/union，以及正在运行的 D-FINE / RT-DETRv2 baselines。

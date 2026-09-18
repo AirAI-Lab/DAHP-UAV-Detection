@@ -45,6 +45,9 @@
 | 640 baseline batch | 8 |
 | 1600 YOLOv8m-P2 controls | batch 2 |
 | RT-DETR-L baseline | 640 px, batch 4, 100 epochs |
+| RT-DETR-L batch-matched control | 640 px, batch 2, 100 epochs; running |
+| 960-px batch-matched base | 960 px, batch 2, 60 epochs; running |
+| D-FINE-M baseline | 640 px, total batch 8, 100 epochs; running |
 | Random seed policy | report n and std; no significance claim without enough seeds |
 | Server recovery | checkpoint resume plus reboot-safe queue scripts |
 
@@ -90,6 +93,22 @@ Rules:
 | YOLOv8l vanilla | 23.21 | 33.76 | 37.94 |
 | YOLOv8l-P2 | 27.21 | 37.96 | 39.04 |
 | P2 gain | +4.0 | +4.2 | +1.1 |
+
+### Exact 1280-px regime controls
+
+All three arms use the same external COCO evaluator, 1280-px input, v8m-P2,
+100 epochs, and one seed per arm. They must not be subtracted from the legacy
+native/md300 law-matrix cells.
+
+| Arm | md100 AP | md100 AP50 | md100 APs | native AP | Tail mean |
+|---|---:|---:|---:|---:|---:|
+| Base | 34.6296 | 54.8244 | 26.2765 | 34.6859 | 0.3202 |
+| Random volume | 34.7233 | 55.0512 | 26.7730 | 34.7770 | 0.3168 |
+| Targeted union | 35.1223 | 55.4333 | 26.9803 | 35.1772 | 0.3221 |
+
+Decomposition under md100: base-to-random volume effect is +0.0937 AP;
+random-to-union targeted residual is +0.3990 AP. The regime is therefore
+**volume-saturated, not strictly zero-sum**.
 
 ### Exposure-aware attribution at 1600 px, md100
 
@@ -138,9 +157,8 @@ sampling alone; most of it is exposure.
 | Pending item | Current purpose | Required before final claim |
 |---|---|---|
 | Targeted union seeds 4--5 | Upgrade targeted arm to n=5 | 100 epochs + md100 evaluation |
-| Exact 1280 union and random controls | Replace frequency proxy in regime matrix | 100 epochs + md100/native evaluation |
-| RT-DETR union arm | Detector-family independence | converged training and unified evaluation |
-| D-FINE / RT-DETRv2 baselines | Optional but reviewer-relevant modern DETR comparison | install/train under disclosed budget or clearly scope out |
+| RT-DETR batch-2 base and union arm | Detector-family independence | converged training and unified evaluation |
+| D-FINE / RT-DETRv2 baselines | Reviewer-relevant modern DETR comparison | complete disclosed-budget training and adapt evaluator output |
 | VisDrone test-dev | External benchmark claim | challenge-server evaluation; otherwise keep val-set limitation |
 | Expanded FPS protocol | Stronger efficiency evidence | preprocessing/inference/postprocess breakdown and >=200 images |
 
@@ -151,6 +169,7 @@ sampling alone; most of it is exposure.
 | state of the art by X AP without protocol | strongest reproduced comparator under our protocol |
 | zero architecture change for the whole system | the rebalancing policy itself adds no architectural modification |
 | rebalancing law | exposure-aware regime-dependent rebalancing principle |
+| 1280 is zero-sum | 1280 is volume-saturated; exact targeted residual is +0.40 md100 over random |
 | union gives +3.83 AP at 1920 | same-epoch gain is +3.83; exposure-matched residual is +0.42 md100 |
 | edge real-time | real-time on a desktop RTX 3090 |
 | statistically significant with n<5 | report n, mean, std, and paired differences; use CI when justified |
