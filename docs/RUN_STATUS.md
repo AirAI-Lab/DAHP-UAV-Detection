@@ -1,6 +1,6 @@
 # Run Status Board
 
-Snapshot: 2026-09-18 21:10 UTC / 2026-09-19 05:10 Beijing.
+Snapshot: 2026-09-18 21:42 UTC / 2026-09-19 05:42 Beijing.
 
 ## Server and queues
 
@@ -12,12 +12,12 @@ Our active jobs use six GPUs:
 
 | GPU | Run | Progress | Current best AP | Status |
 |---:|---|---:|---:|---|
-| 0 | `base_rtdetrl_b2_640` | 20/100 epochs | native 2.646 | running alone; late convergence expected |
-| 1 | `s960_base_b2` | 1/60 | native 0.034 at epoch 1 | batch-matched 960 base |
-| 3 | `cf_s46` | 71/100 | native 38.729 | targeted-union seed 46 |
-| 4 | `cf_s45` | 71/100 | native 38.681 | targeted-union seed 45 |
+| 0 | `base_rtdetrl_b2_640` | 21/100 epochs | native 2.646 | running alone; late convergence expected |
+| 1 | `s960_base_b2` | 4/60 | native 0.108 | batch-matched 960 base |
+| 3 | `cf_s46` | 72/100 | native 38.729 | targeted-union seed 46 |
+| 4 | `cf_s45` | 73/100 | native 38.681 | targeted-union seed 45 |
 | 5 | `rtdetr_union_640` | 44/100 | native 4.632 | RT-DETR union arm |
-| 6 | `base_dfine_m_640` | resumed after epoch 0 | pending | D-FINE-M train batch 8; val batch 2 after OOM control |
+| 6 | `base_dfine_m_640` | epoch-1 eval passed | upstream md100 2.124 | D-FINE-M train batch 8; val batch 2 after OOM control |
 
 GPU2 and GPU7 belong to other users.
 
@@ -42,11 +42,11 @@ GPU2 and GPU7 belong to other users.
 
 Current rough estimates:
 
-- `s960_base_b2`: about 9--10 hours at the observed 589-s epoch time.
-- `cf_s45` / `cf_s46`: about 12--14 hours plus evaluation.
-- D-FINE-M: about 20--24 hours if epoch 0 timing remains stable.
-- Batch-2 RT-DETR-L base: about 30--36 hours.
-- RT-DETR union: about 40--46 hours.
+- `s960_base_b2`: about 7--8 hours at the observed average epoch time.
+- `cf_s45` / `cf_s46`: about 12--13 hours plus evaluation.
+- D-FINE-M: about 15--17 hours if the roughly 9-minute epoch-plus-evaluation cycle remains stable.
+- Batch-2 RT-DETR-L base: about 30 hours.
+- RT-DETR union: about 38--44 hours.
 
 Server reboots and load changes can shift these estimates.
 

@@ -1,6 +1,6 @@
 # Run 状态板
 
-快照时间：2026-09-18 21:10 UTC / 北京时间 2026-09-19 05:10。
+快照时间：2026-09-18 21:42 UTC / 北京时间 2026-09-19 05:42。
 
 ## 服务器与队列
 
@@ -12,12 +12,12 @@ GPU0 重试队列已移除；D-FINE 现在单独运行在 GPU6，total batch 8�
 
 | GPU | Run | 进度 | 当前 best AP | 状态 |
 |---:|---|---:|---:|---|
-| 0 | `base_rtdetrl_b2_640` | 20/100 epochs | native 2.646 | 单独运行；预计晚期收敛 |
-| 1 | `s960_base_b2` | 1/60 | epoch 1 native 0.034 | batch 匹配 960 base |
-| 3 | `cf_s46` | 71/100 | native 38.729 | targeted-union seed 46 |
-| 4 | `cf_s45` | 71/100 | native 38.681 | targeted-union seed 45 |
+| 0 | `base_rtdetrl_b2_640` | 21/100 epochs | native 2.646 | 单独运行；预计晚期收敛 |
+| 1 | `s960_base_b2` | 4/60 | native 0.108 | batch 匹配 960 base |
+| 3 | `cf_s46` | 72/100 | native 38.729 | targeted-union seed 46 |
+| 4 | `cf_s45` | 73/100 | native 38.681 | targeted-union seed 45 |
 | 5 | `rtdetr_union_640` | 44/100 | native 4.632 | RT-DETR union arm |
-| 6 | `base_dfine_m_640` | epoch 0 后已恢复 | 待定 | D-FINE-M 训练 batch 8；OOM 后验证 batch 2 |
+| 6 | `base_dfine_m_640` | epoch-1 评估已通过 | upstream md100 2.124 | D-FINE-M 训练 batch 8；OOM 后验证 batch 2 |
 
 GPU2 和 GPU7 属于其他用户。
 
@@ -40,11 +40,11 @@ GPU2 和 GPU7 属于其他用户。
 
 当前粗略估计：
 
-- `s960_base_b2`：按当前 589 秒/epoch 估计约 9--10 小时。
-- `cf_s45` / `cf_s46`：约 12--14 小时，另加评估。
-- D-FINE-M：若 epoch 0 用时稳定，约 20--24 小时。
-- batch-2 RT-DETR-L base：约 30--36 小时。
-- RT-DETR union：约 40--46 小时。
+- `s960_base_b2`：按当前平均 epoch 用时估计约 7--8 小时。
+- `cf_s45` / `cf_s46`：约 12--13 小时，另加评估。
+- D-FINE-M：若约 9 分钟的 epoch+评估周期稳定，约 15--17 小时。
+- batch-2 RT-DETR-L base：约 30 小时。
+- RT-DETR union：约 38--44 小时。
 
 服务器重启和负载变化会使估计顺延。
 

@@ -17,7 +17,7 @@ UAV 检测精度受长尾、尺度与曝光 regime 耦合影响；label-only pro
 | RQ5 | 原理是否具有预测性？ | 30-epoch two-arm probe，r=0.983，5/5 分离 | 只使用早期 epoch；披露失败 single-arm control | **Supported** | 可选 prospective simulation |
 | RQ6 | 策略是否跨数据集迁移？ | UAVDT union +0.69 AP，tail +1.69；frequency-only 无效 | 同 profiler 和策略，不调参 | **Supported** | 无 |
 | RQ7 | 策略是否跨 detector family？ | RT-DETR base 完成；union 在跑 | 同 640 / 100 ep | **Pending** | 完成并评估 RT-DETR union |
-| RQ8 | 同输入下是否超过 modern general detectors？ | DAHP-M 26.11 vs YOLO26-L 24.90 | 同 val、epoch、evaluator | **当前 YOLO 集合 supported** | 缺 D-FINE / RT-DETRv2 |
+| RQ8 | 同输入下是否超过 modern general detectors？ | DAHP-M 26.11 vs YOLO26-L 24.90 | 同 val、epoch、evaluator | **当前 YOLO 集合 supported** | D-FINE 在跑；RT-DETRv2 已排队 |
 | RQ9 | 是否超过 UAV-specific detectors？ | RemDet repro 29.90；DAHP-L 38.16 | reproduced protocol + compute-matched retrain | **Reproduced protocol 下 supported** | 文献高分辨率值只作上下文 |
 | RQ10 | architecture-first 干预是否在此设置中无效？ | 七代 module 与负结果附录 | matched 100ep 与 DFL audit | **限定范围内 supported** | 不外推到未测试 module |
 | RQ11 | 推理成本是否如实报告？ | RTX 3090 @1600 24.5 FPS | batch 1、FP16 | **Partially supported** | 增加至少 200 张 latency 分解 |
@@ -32,7 +32,7 @@ UAV 检测精度受长尾、尺度与曝光 regime 耦合影响；label-only pro
 | 原理属于事后归类 | 改为 principle；加入 online two-arm probe | 强 | 可选 prospective simulation |
 | exposure/capacity/learnability 混淆 | 640 learnability、exact 1280 volume/targeted 分解、1920 exposure matching、capacity ladder | 强 | 保持协议分离 |
 | SOTA 表述过强 | 删除未公开高分辨率 RemDet claim；使用 strongest reproduced comparator | 强 | 文献行保持分离 |
-| modern baselines 缺失 | 加入 YOLO11/12/26 与 RT-DETR-L | 中 | 若需要补 D-FINE/RT-DETRv2 |
+| modern baselines 缺失 | 加入 YOLO11/12/26 与 RT-DETR-L；D-FINE 在跑，RT-DETRv2 已排队 | 中 | 完成并评估两个 DETR baseline |
 | seeds 不足 | random n=5；targeted 当前 n=3 | 中 | 两个 targeted seeds 在跑 |
 | zero architecture change 含义不清 | policy 不改结构；P2 单独披露和消融 | 强 | 保持精确表述 |
 | efficiency 过强 | desktop GPU 表述，不称 edge | 中 | 升级 latency 协议 |
@@ -118,8 +118,8 @@ UAV 检测精度受长尾、尺度与曝光 regime 耦合影响；label-only pro
 
 ### 算力允许时强烈建议
 
-- [ ] D-FINE baseline
-- [ ] RT-DETRv2 baseline
+- [ ] D-FINE baseline（运行中）
+- [ ] RT-DETRv2 baseline（GPU4 排队）
 - [ ] expanded FPS protocol
 - [ ] prospective online-policy simulation
 - [ ] test-dev challenge submission

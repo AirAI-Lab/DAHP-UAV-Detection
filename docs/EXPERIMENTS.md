@@ -45,7 +45,8 @@ matching the regime prediction.
   exact md100 triplet above separates volume saturation from the targeted
   residual.
 - Loss-space interventions (EQLv2-style reweighting) on strong baselines:
-  approximately zero-sum at saturation.
+  approximately zero-sum once indiscriminate volume/reweighting headroom is
+  exhausted.
 
 ## Efficiency
 

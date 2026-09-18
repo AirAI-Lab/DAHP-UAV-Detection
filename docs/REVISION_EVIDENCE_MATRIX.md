@@ -23,7 +23,7 @@ after volume effects are controlled.
 | RQ5 | Is the principle predictive rather than post hoc? | 30-epoch two-arm probe, r=0.983, 5/5 separation | Uses only early epochs; failed single-arm control disclosed | **Supported** | Optional prospective decision simulation |
 | RQ6 | Does the policy transfer across datasets? | UAVDT union +0.69 AP, tail +1.69; frequency-only ineffective | Same profiler and recipe, no retuning | **Supported** | None unless more datasets requested |
 | RQ7 | Is the policy detector-family independent? | RT-DETR base complete; RT-DETR union in progress | Same 640 px / 100 ep budget | **Pending** | Finish and evaluate RT-DETR union |
-| RQ8 | Does DAHP beat modern general detectors under same input? | DAHP-M 26.11 vs YOLO26-L 24.90 at 640 md100 | Same val, epochs, evaluator | **Supported for current YOLO set** | D-FINE / RT-DETRv2 absent |
+| RQ8 | Does DAHP beat modern general detectors under same input? | DAHP-M 26.11 vs YOLO26-L 24.90 at 640 md100 | Same val, epochs, evaluator | **Supported for current YOLO set** | D-FINE running; RT-DETRv2 queued |
 | RQ9 | Does it beat UAV-specific detectors? | RemDet reproduced 29.90; DAHP-L 38.16 md100 | Reproduced protocol and compute-matched retrain | **Supported under reproduced protocol** | Literature high-res rows remain context only |
 | RQ10 | Are architecture-first interventions reliably ineffective here? | Seven module generations and negative-result appendix | Matched 100-epoch runs and DFL audit | **Supported as scoped negative result** | Do not generalize beyond tested modules |
 | RQ11 | Is inference cost honestly reported? | 24.5 FPS on RTX 3090 at 1600 | Batch 1, FP16 | **Partially supported** | Add >=200-image stage-wise latency |
@@ -38,7 +38,7 @@ after volume effects are controlled.
 | Principle is retrospective | Changed from law to principle; online two-arm probe added | Strong | Optional prospective simulation |
 | Exposure/capacity/learnability confounded | 640 learnability, exact 1280 volume/targeted decomposition, 1920 exposure matching, complete capacity ladder | Strong | Keep protocols separated |
 | SOTA claim too strong | Removed unpublished high-res RemDet claim; wording is strongest reproduced comparator | Strong | Keep literature rows separate |
-| Modern baselines missing | YOLO11/12/26 and RT-DETR-L included | Moderate | Add D-FINE/RT-DETRv2 if required |
+| Modern baselines missing | YOLO11/12/26 and RT-DETR-L included; D-FINE running and RT-DETRv2 queued | Moderate | Complete and evaluate both DETR baselines |
 | Too few seeds | Random n=5; targeted n=3 currently | Moderate | Two targeted seeds running |
 | Zero architecture change ambiguous | Policy adds no architecture change; P2 disclosed and ablated | Strong | Keep exact wording |
 | Efficiency overclaim | Desktop-GPU phrasing, no edge claim | Moderate | Upgrade latency protocol |
@@ -132,8 +132,8 @@ after volume effects are controlled.
 
 ### Strongly recommended if time permits
 
-- [ ] D-FINE baseline
-- [ ] RT-DETRv2 baseline
+- [ ] D-FINE baseline (running)
+- [ ] RT-DETRv2 baseline (queued on GPU4)
 - [ ] Expanded FPS protocol
 - [ ] Prospective online-policy simulation
 - [ ] test-dev challenge submission if possible
