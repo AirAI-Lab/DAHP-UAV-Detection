@@ -48,6 +48,7 @@
 | RT-DETR-L batch-matched control | 640 px, batch 2, 100 epochs; running |
 | 960-px batch-matched base | 960 px, batch 2, 60 epochs; running |
 | D-FINE-M baseline | 640 px, total batch 8, 100 epochs; running |
+| D-FINE validation batch | 2 | Memory control on shared GPU6; does not alter training exposure |
 | Random seed policy | report n and std; no significance claim without enough seeds |
 | Server recovery | checkpoint resume plus reboot-safe queue scripts |
 

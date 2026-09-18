@@ -46,6 +46,7 @@
 | RT-DETR-L batch 匹配对照 | 640 px, batch 2, 100 epochs；运行中 |
 | 960 px batch 匹配 base | 960 px, batch 2, 60 epochs；运行中 |
 | D-FINE-M baseline | 640 px, total batch 8, 100 epochs；运行中 |
+| D-FINE 验证 batch | 2 | 共享 GPU6 的显存控制；不改变训练曝光 |
 | 种子策略 | 报告 n、均值和标准差；样本不足不使用显著性表述 |
 | 服务器恢复 | checkpoint resume + reboot-safe queue scripts |
 
