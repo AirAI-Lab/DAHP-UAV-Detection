@@ -1,10 +1,6 @@
 # SCI 论文全过程复用手册（DAHP 项目版）
 
-本文档沉淀 DAHP 论文从问题定义、实验设计、审稿回应到投稿包制作的完整流程，并吸收《用 Codex 完成一篇可投稿级 SCI 论文》的核心方法：<https://mp.weixin.qq.com/s/aKgnnLhW46P6Y_NkxHDJxA>。
-
-核心原则：
-
-> AI 负责整理、结构化、核查、排版和追踪证据；科研假设、实验设计、数据解释、创新判断和最终结论必须由作者负责。AI 不能替我们做科学结论。
+本文档沉淀 DAHP 论文从问题定义、实验设计、审稿回应到投稿包制作的完整流程，重点维护“原始实验—评估结果—论文结论”的完整证据链。
 
 ## 0. 论文工作总原则
 
@@ -14,7 +10,7 @@
 4. **公平性优先于榜单**：同 split、同协议、同预算优先；文献值只作上下文。
 5. **结论受限**：宁可写受限但严密的结论，不写过强但容易被审稿人推翻的 SOTA 声明。
 6. **可复现**：代码、配置、种子、评估脚本、结果摘要应可发布。
-7. **AI 只做审计**：不能编造参数、文献、实验结果或科学解释。
+7. **结论责任明确**：参数、文献、实验结果、解释和最终结论必须逐项核实。
 
 ## 1. 第一阶段：建立事实表
 
@@ -56,11 +52,11 @@
 
 ## 2. 第二阶段：文献证据矩阵
 
-不要让 AI 自由检索并生成参考文献。正确流程：
+不要凭记忆生成参考文献。正确流程：
 
 1. 作者在 Zotero、IEEE Xplore、arXiv、PubMed 或出版社页面确认文献；
 2. 保存 BibTeX/key；
-3. 再让 AI 只做映射和格式化。
+3. 仅对已核实条目做字段映射和格式化。
 
 矩阵模板：
 
@@ -255,52 +251,39 @@ DAHP 推荐图组：
 11. 文献作者、题目、venue、年份、页码、DOI 完整；
 12. supplementary 被正文引用；
 13. 删除内部实验 ID；
-14. 检查 AI 使用声明。
+14. 检查资助、伦理和数据声明。
 
-## 11. 可复用 AI Prompt
+## 11. 可复用审计问题
 
 ### 事实抽取
 
-```text
-Read the supplied code, configs, logs, and evaluation JSONs. Extract an
-objective fact table containing dataset, split, model, training budget,
-evaluator, hardware, metrics, and uncertainty. Mark missing fields as PENDING.
-Do not infer or invent values. For every fixed value, cite the source file.
-```
+- 数据集、split、模型、训练预算、评估器和硬件分别由哪个源文件确定？
+- 哪些字段仍未知，必须标记为 pending？
+- 哪些数值存在多种协议，必须分列而不是混算？
 
 ### Claim 审计
 
-```text
-Compare the abstract, contributions, results, discussion, and conclusion.
-List every factual claim and map it to a table row, figure, equation, or
-evaluation JSON. Flag unsupported claims, mixed protocols, different input
-sizes, or language stronger than the evidence.
-```
+- 每个事实性论断是否映射到表格、图、公式或评估记录？
+- 是否混用协议、输入尺寸或未完成证据？
+- 表述强度是否与证据强度一致？
 
 ### 公平性审计
 
-```text
-For every baseline row, list split, input size, epochs, batch, hardware,
-checkpoint source, evaluator, and protocol. Identify whether the comparison is
-same-protocol, reproduced, or literature-only. Suggest exact wording that
-avoids overclaiming.
-```
+- split、输入尺寸、epochs、batch、硬件、checkpoint 来源、评估器和协议是否一致；若不一致是否已披露？
+- 该行是 same-protocol、reproduced 还是 literature-only？
+- 是否把分辨率或容量收益误归因给采样策略？
 
 ### 图表审计
 
-```text
-Inspect each figure caption and data source. Check terminology, units, panel
-purpose, legend, font size, and whether plotted values match a table. Report
-problems and suggested fixes; do not silently change scientific content.
-```
+- 每个 panel 是否只表达一个明确结论？
+- 术语、单位、图例和数据源是否与表格一致？
+- 最终栏宽下字体是否可读，绘图脚本是否可追溯？
 
 ### 文献审计
 
-```text
-Use only supplied verified references. Check authors, title, venue, year,
-pages, DOI, and publisher/arXiv URL. Report mismatches or missing fields. Do
-not create new references.
-```
+- 作者、题目、venue、年份、页码、DOI 和 URL 是否完整核实？
+- 被引实验是否真正支持正文句子？
+- 是否区分 validation、test-dev 和 challenge 结果？
 
 ## 12. 服务器与实验管理
 
@@ -330,28 +313,16 @@ not create new references.
 - [ ] supplementary tables；
 - [ ] per-class results；
 - [ ] negative-result audit；
-- [ ] AI-use declaration；
 - [ ] reference export；
 - [ ] figure source scripts；
 - [ ] reproducibility instructions；
 - [ ] result summary checksums。
 
-AI 使用声明模板：
-
-```text
-During preparation of this work, the authors used Codex (OpenAI) to assist
-with organizing experimental records, checking manuscript consistency,
-formatting tables and references, and drafting process documentation. The
-authors reviewed and edited all content, verified all experiments and
-citations, selected the scientific claims, and take full responsibility for
-the content of the article.
-```
-
 ## 14. 常见坑与修复
 
 | 坑 | 修复 |
 |---|---|
-| AI 润色时改数值 | number-lock prompt；修改前后 diff 审核 |
+| 语言润色时改数值 | 固定结果列；修改前后逐项 diff 审核 |
 | md100 和 native 混用相减 | 分开列、分开表 |
 | same-epoch 曝光误当 targeted | 加 random volume 和 exposure-matched control |
 | 分辨率和算法同时变化 | 用 ladder 和同输入消融 |

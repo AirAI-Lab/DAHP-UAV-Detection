@@ -1,14 +1,7 @@
 # Reusable SCI Paper Process Playbook
 
-This playbook distills the process used for the DAHP UAV-detection manuscript
-and incorporates useful practices from the workflow article *"Using Codex to
-Complete a Submittable SCI Paper in One Week"*
-(<https://mp.weixin.qq.com/s/aKgnnLhW46P6Y_NkxHDJxA>).
-
-Core rule:
-
-> AI can organize, audit, format, and trace evidence. The authors own the
-> scientific hypothesis, experimental validity, conclusions, and final claims.
+This playbook distills the process used for the DAHP UAV-detection manuscript.
+It emphasizes an unbroken evidence chain from raw runs to manuscript claims.
 
 ## 0. Non-negotiable principles
 
@@ -20,8 +13,7 @@ Core rule:
    numbers are contextual.
 5. **Honest limitations.** A bounded claim is stronger than an overbroad claim.
 6. **Reproducibility.** Release code, configs, seeds, scripts, and summaries.
-7. **AI as audit layer.** AI must not invent science, citations, parameters,
-   or results.
+7. **Accountable authorship.** Authors verify every parameter, citation, result, interpretation, and final claim.
 
 ## 1. Day 1: objective fact table
 
@@ -61,9 +53,9 @@ Template:
 
 ## 2. Day 2: literature evidence matrix
 
-Do not let AI freely retrieve and invent citations. Authors first verify papers
-in Zotero, IEEE Xplore, arXiv, PubMed, or publisher pages. AI may format and
-map only verified sources.
+Do not generate citations from memory. Authors first verify papers in Zotero,
+IEEE Xplore, arXiv, PubMed, or publisher pages; formatting tools may handle
+only verified sources.
 
 Template:
 
@@ -232,52 +224,41 @@ After every edit:
 11. references verified;
 12. supplementary tables referenced;
 13. internal run IDs removed;
-14. AI-use statement reviewed.
+14. funding, ethics, and data statements reviewed.
 
-## 11. Reusable AI prompts
+## 11. Reusable audit questions
 
 ### Fact extraction
 
-```text
-Read the supplied code, configs, logs, and evaluation JSONs. Extract an
-objective fact table with dataset, split, model, training budget, evaluator,
-hardware, metrics, and uncertainty. Mark missing fields as PENDING. Do not
-infer or invent values. For every fixed value, cite the source file.
-```
+- Which source file fixes the dataset, split, model, schedule, evaluator, and hardware?
+- Which fields remain unknown and must be marked pending?
+- Which values have multiple protocols and therefore require separate columns?
 
 ### Claim audit
 
-```text
-Compare the abstract, contributions, results, discussion, and conclusion.
-List every factual claim and map it to a table row, figure, equation, or
-evaluation JSON. Flag unsupported claims, mixed protocols, different inputs,
-or language stronger than the evidence.
-```
+- Does each factual claim map to a table, figure, equation, or evaluation record?
+- Does any claim mix protocols, input sizes, or incomplete evidence?
+- Which wording accurately reflects the strength of the evidence?
 
 ### Fairness audit
 
-```text
-For every baseline row, list split, input size, epochs, batch, hardware,
-checkpoint source, evaluator, and protocol. Identify whether the comparison is
-same-protocol, reproduced, or literature-only. Suggest wording that avoids
-overclaiming.
-```
+- Are split, input size, epochs, batch, hardware, checkpoint source, evaluator,
+  and protocol identical or explicitly disclosed?
+- Is the row same-protocol, reproduced, or literature-only?
+- Does the comparison avoid attributing resolution or capacity effects to the
+  sampling policy?
 
 ### Figure audit
 
-```text
-Inspect each figure caption and data source. Check terminology, units, panel
-purpose, legend, font size, and whether plotted values match a table. Report
-problems and suggested fixes; do not silently change scientific content.
-```
+- Does each panel communicate one bounded message?
+- Are terminology, units, legends, and data sources consistent with the tables?
+- Are fonts readable at final column width and is the plotting script available?
 
 ### Reference audit
 
-```text
-Use only supplied verified references. Check authors, title, venue, year,
-pages, DOI, and publisher/arXiv URL. Report mismatches or missing fields. Do
-not create new references.
-```
+- Are authors, title, venue, year, pages, DOI, and URL complete and verified?
+- Does the cited experiment actually support the sentence it is attached to?
+- Are validation, test-dev, and challenge results distinguished?
 
 ## 12. Reboot-safe server workflow
 
@@ -307,28 +288,16 @@ Practices used in this project:
 - [ ] supplementary tables;
 - [ ] per-class results;
 - [ ] failure/negative-result audit;
-- [ ] AI-use declaration if required;
 - [ ] reference export;
 - [ ] figure source scripts;
 - [ ] reproducibility instructions;
 - [ ] checksums for released result summaries.
 
-### AI-use declaration template
-
-```text
-During preparation of this work, the authors used Codex (OpenAI) to assist
-with organizing experimental records, checking manuscript consistency,
-formatting tables and references, and drafting process documentation. The
-authors reviewed and edited all content, verified all experiments and
-citations, selected the scientific claims, and take full responsibility for
-the content of the article.
-```
-
 ## 14. Common pitfalls and fixes
 
 | Pitfall | Fix |
 |---|---|
-| AI changes a number during polishing | Number-lock prompt and before/after diff audit |
+| Language polishing changes a number | Freeze result columns and audit a before/after diff |
 | Mixed protocols in one subtraction | Separate md100/native columns |
 | Same-epoch exposure confounded with sampling | Add random-volume and exposure-matched controls |
 | Resolution and algorithm change together | Use same-input ablation and ladder |
