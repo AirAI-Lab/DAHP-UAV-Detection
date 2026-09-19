@@ -45,6 +45,7 @@
 | RT-DETR-L baseline | 640 px, batch 4, 100 epochs |
 | RT-DETR-L batch 匹配对照 | 640 px, batch 2, 100 epochs；运行中 |
 | 960 px batch 匹配 base/union | 960 px, batch 2, 60 epochs；已完成 |
+| 960 px exact random-volume control | 12,276 张图曝光，batch 2，60 epochs；运行中 |
 | D-FINE-M baseline | 640 px, total batch 8, 100 epochs；修复 evaluator 后从 epoch 50 续跑 |
 | D-FINE 验证 batch | 2 | 共享 GPU6 的显存控制；不改变训练曝光 |
 | 种子策略 | 报告 n、均值和标准差；样本不足不使用显著性表述 |
@@ -179,6 +180,7 @@ checkpoint 49 的 batch-8 sanity check 结果：
 | Pending 项 | 当前用途 | 最终 claim 前必须完成 |
 |---|---|---|
 | Targeted union seeds 4--5 | 将 targeted arm 扩展到 n=5 | 100 epochs + md100 评估 |
+| Exact 960 random-volume control | 替代 legacy 77/23 分解 | 60 epochs + md100/native 评估 |
 | RT-DETR batch-2 base 与 union arm | detector-family independence | 收敛训练并统一评估 |
 | D-FINE / RT-DETRv2 baselines | reviewer 相关 modern DETR comparison | 完成披露预算训练并适配 evaluator 输出 |
 | VisDrone test-dev | 外部 benchmark claim | challenge-server 评估；否则保留 val limitation |

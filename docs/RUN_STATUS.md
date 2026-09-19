@@ -1,6 +1,6 @@
 # Run Status Board
 
-Snapshot: 2026-09-19 08:15 UTC / 16:15 Beijing.
+Snapshot: 2026-09-19 08:29 UTC / 16:29 Beijing.
 
 ## Server and queues
 
@@ -8,18 +8,19 @@ All listed supervisors and final-evaluation watchers are reboot-safe. The
 D-FINE GPU0 retry queue was removed; D-FINE now runs alone on GPU6 with total
 batch 8. GPU0 is reserved for the batch-2 RT-DETR-L control.
 
-Our active jobs use five GPUs:
+Our active jobs use six GPUs:
 
 | GPU | Run | Progress | Current best AP | Status |
 |---:|---|---:|---:|---|
 | 0 | `base_rtdetrl_b2_640` | 39/100 epochs | native 3.804 | running alone; late convergence expected |
+| 1 | `s960_rand_b2` | launched 0/60 | pending | exact random-volume control for 960 |
 | 3 | `cf_s46` | 88/100 | native 38.729 | targeted-union seed 46 |
 | 4 | `cf_s45` | 88/100 | native 38.681 | targeted-union seed 45 |
 | 5 | `rtdetr_union_640` | 53/100 | native 4.632 | RT-DETR union arm |
 | 6 | `base_dfine_m_640` | resumed at 50/100 | corrected ckpt-49 AP 30.2 | COCO category mapping fixed; train batch 8 |
 
-`s960_base_b2` completed all 60 epochs and released GPU1. GPU1, GPU2, and GPU7
-are not part of our active allocation at this snapshot.
+`s960_base_b2` completed all 60 epochs. Its released GPU1 is now used by the
+exact 960 random-volume control. GPU2 and GPU7 belong to other users.
 
 ## Completed fairness controls
 
@@ -28,6 +29,9 @@ are not part of our active allocation at this snapshot.
 - Exact 1280 interpretation: volume +0.0937, targeted residual +0.3990 md100.
 - Exact 960 batch-matched base/union: md100 28.1009/31.9239 (+3.8231);
   native 28.1722/31.9794 (+3.8072); APs +4.1603; tail mean +4.7704.
+- The matching 960 random-volume arm uses the same 12,276-image exposure,
+  batch 2, 60 epochs, and seed 0; it will separate volume from targeted
+  reallocation without relying on the legacy 77/23 decomposition.
 - D-FINE COCO category-ID remap fixed. Checkpoint 49 changes from invalid
   AP 2.8 to corrected AP 30.2 under validation batch 8.
 - Manuscript attribution table, Fig. 8, and bilingual fact/evidence documents
@@ -54,8 +58,9 @@ Server reboots and load changes can shift these estimates.
 ## Next actions
 
 1. Replace the three-seed 1600 targeted statistic with n=5 after seeds 45/46.
-2. Add batch-matched RT-DETR base/union cross-family evidence only after both
+2. Insert the exact 960 random-volume terminal value when it completes.
+3. Add batch-matched RT-DETR base/union cross-family evidence only after both
    complete and use one evaluator.
-3. Parse D-FINE / RT-DETRv2 upstream COCO logs into the common result schema.
-4. Keep protocol-separated values in separate table blocks; never subtract
+4. Parse D-FINE / RT-DETRv2 upstream COCO logs into the common result schema.
+5. Keep protocol-separated values in separate table blocks; never subtract
    md100 from native/md300.

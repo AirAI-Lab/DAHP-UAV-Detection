@@ -69,4 +69,4 @@ matched residual    native +0.49 / md100 +0.42 / APs +0.92
 
 已完成：YOLO11/YOLO12/YOLO26 modern baselines、完整 YOLOv8l/P2 ladder、1920 曝光匹配控制、5 个 random-volume 种子、exact 960 batch 匹配 base/union、exact 1280 base/random/union controls、UAVDT 迁移和在线 two-arm 预测。
 
-待最终回填：targeted-union 第 4--5 个种子、batch 匹配的 RT-DETR base/union，以及正在运行的 D-FINE / RT-DETRv2 baselines。D-FINE 前 50 个 log 的 COCO AP 使用了错误 category-ID 映射，只作为审计历史保留；修正 evaluator 后已从 epoch 50 恢复训练；epoch 51 是第一条完整修正后的 log 评估。
+待最终回填：targeted-union 第 4--5 个种子、exact 960 random-volume control、batch 匹配的 RT-DETR base/union，以及正在运行的 D-FINE / RT-DETRv2 baselines。D-FINE 前 50 个 log 的 COCO AP 使用了错误 category-ID 映射，只作为审计历史保留；epoch 51 是第一条完整修正后的 log 评估。

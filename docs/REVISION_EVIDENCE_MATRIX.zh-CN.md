@@ -13,7 +13,7 @@ UAV 检测精度受长尾、尺度与曝光 regime 耦合影响；label-only pro
 | RQ1 | 尺度病理是否主导 baseline 行为？ | 85.3% <32 px；640/1280/1600 完整 v8l vs P2 ladder | 同 detector family、同 native/md300 evaluator | **Supported** | 无 |
 | RQ2 | 长尾与结构混淆能否仅由标签度量？ | 45:1、23 个高相似类别对、van/truck axis；UAVDT profile | label-only profiler 与论文公式验证 | **Supported** | 保持代码/公式/图一致 |
 | RQ3 | rebalancing 效果是否依赖 regime？ | 640/960/1600/1920；exact 960 pair 28.10/31.92 md100；exact 1280 triplet 34.63/34.72/35.12 md100；online probe r=0.983 | exact 960/1280 均匹配 detector、epoch、batch 和 evaluator | **Supported，带 exact controls 单 seed 限制** | 可选复现 exact controls |
-| RQ4 | 增益来自曝光还是 targeted sampling？ | exact 960 union +3.82；exact 1280：volume +0.09、targeted +0.40；1600 md100: R 36.55 / random 36.91 / targeted 37.09；1920 exposure-matched control | random-volume 与 120-epoch base control | **Partially supported** | 1600 targeted 完成n=5；exact controls 单 seed |
+| RQ4 | 增益来自曝光还是 targeted sampling？ | exact 960 union +3.82；exact 1280：volume +0.09、targeted +0.40；1600 md100: R 36.55 / random 36.91 / targeted 37.09；1920 exposure-matched control | random-volume 与 120-epoch base control | **Partially supported** | 1600 targeted 完成n=5；exact 960 random 在跑 |
 | RQ5 | 原理是否具有预测性？ | 30-epoch two-arm probe，r=0.983，5/5 分离 | 只使用早期 epoch；披露失败 single-arm control | **Supported** | 可选 prospective simulation |
 | RQ6 | 策略是否跨数据集迁移？ | UAVDT union +0.69 AP，tail +1.69；frequency-only 无效 | 同 profiler 和策略，不调参 | **Supported** | 无 |
 | RQ7 | 策略是否跨 detector family？ | RT-DETR base 完成；union 在跑 | 同 640 / 100 ep | **Pending** | 完成并评估 RT-DETR union |

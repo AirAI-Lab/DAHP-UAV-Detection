@@ -47,6 +47,7 @@
 | RT-DETR-L baseline | 640 px, batch 4, 100 epochs |
 | RT-DETR-L batch-matched control | 640 px, batch 2, 100 epochs; running |
 | 960-px batch-matched base/union | 960 px, batch 2, 60 epochs; complete |
+| 960-px exact random-volume control | 12,276-image exposure, batch 2, 60 epochs; running |
 | D-FINE-M baseline | 640 px, total batch 8, 100 epochs; running from epoch 50 after evaluator fix |
 | D-FINE validation batch | 2 | Memory control on shared GPU6; does not alter training exposure |
 | Random seed policy | report n and std; no significance claim without enough seeds |
@@ -188,6 +189,7 @@ sampling alone; most of it is exposure.
 | Pending item | Current purpose | Required before final claim |
 |---|---|---|
 | Targeted union seeds 4--5 | Upgrade targeted arm to n=5 | 100 epochs + md100 evaluation |
+| Exact 960 random-volume control | Replace legacy 77/23 decomposition | 60 epochs + md100/native evaluation |
 | RT-DETR batch-2 base and union arm | Detector-family independence | converged training and unified evaluation |
 | D-FINE / RT-DETRv2 baselines | Reviewer-relevant modern DETR comparison | complete disclosed-budget training and adapt evaluator output |
 | VisDrone test-dev | External benchmark claim | challenge-server evaluation; otherwise keep val-set limitation |

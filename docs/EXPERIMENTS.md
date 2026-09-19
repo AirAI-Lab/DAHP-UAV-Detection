@@ -61,8 +61,8 @@ Completed: modern YOLO11/YOLO12/YOLO26 baselines, complete YOLOv8l/P2 ladder,
 base/random/union controls, UAVDT transfer, and online two-arm prediction.
 The exact 960 batch-matched base/union control is also complete.
 
-Pending final insertion: targeted-union seeds 4--5, batch-matched RT-DETR
-base/union, and the running D-FINE / RT-DETRv2 baselines. D-FINE's first 49
-logged COCO AP values used an invalid category-ID mapping and are retained
-only as audit history; training resumed from epoch 50 after correcting the
-evaluator.
+Pending final insertion: targeted-union seeds 4--5, the exact 960 random-volume
+control, batch-matched RT-DETR base/union, and the running D-FINE / RT-DETRv2
+baselines. D-FINE's first 50 logged COCO AP values used an invalid category-ID
+mapping and are retained only as audit history; epoch 51 is the first corrected
+logged evaluation.
