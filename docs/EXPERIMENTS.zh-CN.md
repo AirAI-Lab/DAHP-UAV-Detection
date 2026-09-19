@@ -15,7 +15,7 @@
 | 分辨率 | same-epoch union dAP | 解释 |
 |---:|---:|---|
 | 640 | +0.21 | learnability 下界；目标相对 stride 过小 |
-| 960 | +3.15 | under-fitted；额外曝光可以转化为学习收益 |
+| 960 | batch 匹配 base/union = 28.10/31.92 md100（+3.82）；native = 28.17/31.98（+3.81） | under-fitted；APs +4.16，tail mean +4.77 |
 | 1280 | exact 同 evaluator base/random/union = 34.63/34.72/35.12 md100 AP | volume 接近饱和（+0.09），targeted union 在 random 之上保留 +0.40；是 volume-saturated，不是严格零和 |
 | 1600 | +0.78 | intermediate；volume 与 targeted 均有正贡献 |
 | 1920 | +3.83 | exposure-limited；same-epoch 增益主要来自曝光 |
@@ -67,6 +67,6 @@ matched residual    native +0.49 / md100 +0.42 / APs +0.92
 
 ## 当前完成状态
 
-已完成：YOLO11/YOLO12/YOLO26 modern baselines、完整 YOLOv8l/P2 ladder、1920 曝光匹配控制、5 个 random-volume 种子、exact 1280 base/random/union controls、UAVDT 迁移和在线 two-arm 预测。
+已完成：YOLO11/YOLO12/YOLO26 modern baselines、完整 YOLOv8l/P2 ladder、1920 曝光匹配控制、5 个 random-volume 种子、exact 960 batch 匹配 base/union、exact 1280 base/random/union controls、UAVDT 迁移和在线 two-arm 预测。
 
-待最终回填：targeted-union 第 4--5 个种子、batch 匹配的 RT-DETR base/union，以及正在运行的 D-FINE / RT-DETRv2 baselines。
+待最终回填：targeted-union 第 4--5 个种子、batch 匹配的 RT-DETR base/union，以及正在运行的 D-FINE / RT-DETRv2 baselines。D-FINE 前 50 个 log 的 COCO AP 使用了错误 category-ID 映射，只作为审计历史保留；修正 evaluator 后已从 epoch 50 恢复训练；epoch 51 是第一条完整修正后的 log 评估。

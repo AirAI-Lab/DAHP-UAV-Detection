@@ -283,6 +283,10 @@ $V_L{+}P_2$ & 37.59 & $+1.66$ (head) & 0.322 \\
 \midrule
 \multicolumn{4}{l}{\emph{Same-evaluator policy controls (v8m-P2)}}\\
 \midrule
+\multicolumn{4}{l}{\emph{Exact 960 controls (md100, v8m-P2, batch 2)}}\\
+Baseline & 28.10 & --- & 0.208 \\
+\textbf{Targeted union} & \textbf{31.92} & $\mathbf{+3.82}$ (union) & \textbf{0.256} \\
+\midrule
 \multicolumn{4}{l}{\emph{Exact 1280 controls (md100, v8m-P2)}}\\
 Baseline & 34.63 & --- & 0.320 \\
 Random volume control & 34.72 & $+0.09$ (volume) & 0.317 \\
@@ -299,11 +303,11 @@ R$+$T (tail-only) & 38.58 & $+0.51$ & 0.315 \\
 R$+$C (confusion-only) & 38.68 & $+0.61$ & 0.317 \\
 \textbf{\dahpM{} (R$+$T$\cup$C)} & \textbf{38.82} & $+0.75$ & \textbf{0.318} \\
 \bottomrule
-\multicolumn{4}{l}{\footnotesize Exact-1280 values are one seed per arm under the same external evaluator. $^{\pm}$std over seeds at 1600\,px: R only $n{=}3$;}\\
+\multicolumn{4}{l}{\footnotesize Exact 960/1280 values are one seed per arm under the same external evaluator. $^{\pm}$std at 1600\,px: R only $n{=}3$;}\\
 \multicolumn{4}{l}{\footnotesize random control $n{=}5$; targeted union currently $n{=}3$ and is being expanded to $n{=}5$.}
 \end{tabular}}
 \end{table}
-Table~\ref{tab:attribution} separates architecture, exposure, and targeted reallocation. The exact 1280-px triplet revises the earlier zero-sum description: random duplication changes md100 \ap{} by only $+0.09$, whereas targeted union leaves a $+0.40$-\ap{} residual over the matched random control. The regime is therefore \emph{volume-saturated}, not strictly zero-sum. At 1600\,px, random volume duplication explains $+0.36$ of the $+0.54$-\ap{} R-only$\to$union gain; the targeted residual is $+0.18$~\ap{} and is accompanied by a tail-mean increase ($0.339\to0.346$). Thus the honest interpretation is not ``oversampling alone explains the gain: exposure is the larger component, while targeted union contributes a smaller directional residual. The native component ablation additionally shows that the union of tail and confusion axes outperforms either alone.
+Table~\ref{tab:attribution} separates architecture, exposure, and targeted reallocation. The new batch-matched 960-px control confirms the under-fitted regime: union sampling raises md100 \ap{} from $28.10$ to $31.92$ ($+3.82$), with \aps{} increasing by $+4.16$ and the tail mean from $0.208$ to $0.256$. The exact 1280-px triplet revises the earlier zero-sum description: random duplication changes md100 \ap{} by only $+0.09$, whereas targeted union leaves a $+0.40$-\ap{} residual over the matched random control. The regime is therefore \emph{volume-saturated}, not strictly zero-sum. At 1600\,px, random volume duplication explains $+0.36$ of the $+0.54$-\ap{} R-only$\to$union gain; the targeted residual is $+0.18$~\ap{} and is accompanied by a tail-mean increase ($0.339\to0.346$). Thus the honest interpretation is not ``oversampling alone explains the gain: exposure is the larger component, while targeted union contributes a smaller directional residual. The native component ablation additionally shows that the union of tail and confusion axes outperforms either alone.
 
 \subsection{Regime Analysis}
 \label{sec:regime}
@@ -326,11 +330,11 @@ YOLOv8l (vanilla) & 23.21 & 33.76 & 37.94 \\
 \end{tabular}
 \end{table}
 
-The epoch-matched resolution ladder (@ep60) reads $960{\to}1280{\to}1600{\to}1920 = 30.09{\to}35.61{\to}37.68{\to}34.91$~\ap{}---non-monotonic, with a $2.8$-\ap{} drop beyond the peak (Fig.~\ref{fig:regime}). At $960$\,px (under-fitted), frequency sampling gains $+1.69$~\ap{} over a volume-matched control, decomposing as $77\%$ volume / $23\%$ targeted. At $1280$\,px, the exact same-evaluator triplet is $34.63/34.72/35.12$~\ap{} for base/random/union: the volume channel is saturated ($+0.09$), but targeted union retains $+0.40$~\ap{} with class redistribution (bus $-1.4$, awning-tricycle $+1.1$). At $1600$\,px (intermediate), union sampling yields $+0.6$--$1.0$~\ap. These instantiate P1--P3 (Fig.~\ref{fig:mechanism}).
+The epoch-matched resolution ladder (@ep60) reads $960{\to}1280{\to}1600{\to}1920 = 30.09{\to}35.61{\to}37.68{\to}34.91$~\ap{}---non-monotonic, with a $2.8$-\ap{} drop beyond the peak (Fig.~\ref{fig:regime}). At $960$\,px, the new batch-matched pair gives $28.10/31.92$~md100 \ap{} for base/union ($+3.82$); the legacy volume-matched control decomposed this under-fit rescue as approximately $77\%$ volume / $23\%$ targeted. At $1280$\,px, the exact same-evaluator triplet is $34.63/34.72/35.12$~\ap{} for base/random/union: the volume channel is saturated ($+0.09$), but targeted union retains $+0.40$~\ap{} with class redistribution (bus $-1.4$, awning-tricycle $+1.1$). At $1600$\,px (intermediate), union sampling yields $+0.6$--$1.0$~\ap. These instantiate P1--P3 (Fig.~\ref{fig:mechanism}).
 
 \subsubsection{Principle prediction test and refinement}
 \label{sec:lawtest}
-The principle makes falsifiable predictions beyond the regimes where it was identified (Table~\ref{tab:lawmatrix}). At $960$\,px the prediction held: union sampling gained $+3.15$~\ap{} with tail classes $+3.8$---the volume-dominated rescue of P1. At $1920$\,px the naive reading (\emph{resolution beyond the peak} $\Rightarrow$ aggregate-neutral) was \textbf{falsified}: the same-epoch union arm gained $+3.83$~\ap. An exposure-matched control, however, shows that this number must not be read as a targeted-sampling effect: training the base for 120 epochs lifts native \ap{} from 35.67 to 39.01, leaving a $+0.49$ native / $+0.42$ md100 residual for union, with \aps{} increasing by $+0.92$. The correct moderator is therefore \emph{data-exposure headroom} $h$, not resolution alone. A boundary condition also emerges at $640$\,px: objects are too small to be learnable at that stride, so duplication cannot rescue tail classes ($+0.21$~\ap, tail unchanged at $\approx0.20$). The five-point characterization---predict, test, falsify, refine---constitutes the empirical core of the principle.
+The principle makes falsifiable predictions beyond the regimes where it was identified (Table~\ref{tab:lawmatrix}). At $960$\,px the prediction held: batch-matched union sampling gained $+3.81$ native / $+3.82$ md100 \ap, with the tail mean increasing by $+4.8$ points---the volume-dominated rescue of P1. At $1920$\,px the naive reading (\emph{resolution beyond the peak} $\Rightarrow$ aggregate-neutral) was \textbf{falsified}: the same-epoch union arm gained $+3.83$~\ap. An exposure-matched control, however, shows that this number must not be read as a targeted-sampling effect: training the base for 120 epochs lifts native \ap{} from 35.67 to 39.01, leaving a $+0.49$ native / $+0.42$ md100 residual for union, with \aps{} increasing by $+0.92$. The correct moderator is therefore \emph{data-exposure headroom} $h$, not resolution alone. A boundary condition also emerges at $640$\,px: objects are too small to be learnable at that stride, so duplication cannot rescue tail classes ($+0.21$~\ap, tail unchanged at $\approx0.20$). The five-point characterization---predict, test, falsify, refine---constitutes the empirical core of the principle.
 
 \paragraph{Online two-arm prediction}
 \label{sec:online}
@@ -345,22 +349,23 @@ Fig.~\ref{fig:online} tests whether the principle can be applied \emph{before} t
 
 \begin{table}[!t]
 \centering
-\caption{Union-sampling effect across the resolution--regime matrix on the same YOLOv8m-P2 detector family (legacy native protocol, matched 60/100-epoch budgets per series). The effect tracks data-exposure headroom, not resolution alone. The exact same-evaluator 1280 triplet is reported separately in Table~\ref{tab:attribution} to avoid protocol mixing.}
+\caption{Union-sampling effect across the resolution--regime matrix on the same YOLOv8m-P2 detector family (native protocol, matched 60/100-epoch budgets per series). The 960-px cell is the new batch-matched re-evaluation. The effect tracks data-exposure headroom, not resolution alone; the exact same-evaluator 1280 triplet is reported separately in Table~\ref{tab:attribution} to avoid protocol mixing.}
 \label{tab:lawmatrix}
 \resizebox{\columnwidth}{!}{\begin{tabular}{lccccc}
 \toprule
 +Resolution & 640 & 960 & 1280 & 1600 & 1920 \\
 \midrule
-+base \ap & 27.27 & 30.26 & 36.20 & 38.07 & 35.67 \\
-+$+$union \ap & 27.48 & 33.41 & $\approx$36.2$^{c}$ & 38.85 & 39.50 \\
-base@120 (exposure-matched) & --- & --- & --- & --- & 39.01$^{d}$ \\
++base \ap & 27.27 & 28.17$^{c}$ & 36.20 & 38.07 & 35.67 \\
++$+$union \ap & 27.48 & 31.98$^{c}$ & $\approx$36.2$^{d}$ & 38.85 & 39.50 \\
+base@120 (exposure-matched) & --- & --- & --- & --- & 39.01$^{e}$ \\
 \midrule
-+$\Delta$ (same epoch) & $+0.21$ & $+3.15$ & $+0.05^{c}$ & $+0.78$ & $+3.83$ \\
++$\Delta$ (same epoch) & $+0.21$ & $+3.81^{c}$ & $+0.05^{d}$ & $+0.78$ & $+3.83$ \\
 +$\Delta$ (exposure-matched) & --- & --- & --- & --- & $+0.49$ \\
 +regime & unlearn. & under-fit & volume-sat. & sweet & expos.-lim. \\
 \bottomrule
-\multicolumn{6}{l}{\footnotesize $^{c}$legacy frequency-sampling proxy at 1280 (36.25 vs.\ 36.20); exact 1280 base/random/union is $34.63/34.72/35.12$}\\
-\multicolumn{6}{l}{\footnotesize md100. $^{d}$md100: base@120 $=37.51$, union@60 $=37.93$ ($+0.42$); \aps{} $29.54\to30.46$ ($+0.92$).}
+\multicolumn{6}{l}{\footnotesize $^{c}$new batch-matched 960 base/union re-evaluation (28.17/31.98 native; 28.10/31.92 md100).}\\
+\multicolumn{6}{l}{\footnotesize $^{d}$legacy frequency-sampling proxy at 1280 (36.25 vs.\ 36.20); exact triplet is $34.63/34.72/35.12$}\\
+\multicolumn{6}{l}{\footnotesize md100. $^{e}$md100: base@120 $=37.51$, union@60 $=37.93$ ($+0.42$); \aps{} $29.54\to30.46$ ($+0.92$).}
 \end{tabular}}
 \end{table}
 

@@ -36,7 +36,7 @@ for i, (t, s, col) in enumerate(items):
 # ── 块2: 定律 (fig8b 精简) ──
 ax1 = fig.add_subplot(gs[1])
 res = [640, 960, 1280, 1600, 1920]
-delta = [0.21, 3.15, 0.05, 0.78, 3.83]
+delta = [0.21, 3.81, 0.05, 0.78, 3.83]
 residual = [0, 0, 0, 0, 0.49]
 colors = [C["grey"], C["green"], C["grey"], C["blue"], C["orange"]]
 ax1.bar(range(5), delta, color=colors, width=0.62, zorder=3, alpha=0.48)

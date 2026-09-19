@@ -69,8 +69,28 @@ D-FINE uses the Objects365+COCO checkpoint for tuning. RT-DETRv2 uses the offici
 - First training batch shape for both trainers: `(8, 3, 640, 640)`.
 - RT-DETRv2 accidental backbone download disabled with `PResNet.pretrained: False`.
 
+## D-FINE evaluator correction
+
+A batch-8 validation sanity check exposed a COCO category-ID mismatch. D-FINE
+outputs zero-based detector labels, while the VisDrone COCO ground truth uses
+category IDs 1--10. The upstream evaluator passed labels through without the
+dataset-specific `label2category` remap, producing invalid AP values despite
+reasonable box/class diagnostics. Training and loss were unaffected.
+
+`src/solver/det_engine.py` now converts detector labels through
+`data_loader.dataset.label2category` only for COCO evaluation; the lightweight
+validator continues to use zero-based labels. On checkpoint 49:
+
+| Evaluator | AP | AP50 | APs |
+|---|---:|---:|---:|
+| Before remap, validation batch 8 | 2.8 | 4.9 | 2.2 |
+| After remap, validation batch 8 | 30.2 | 49.1 | 20.2 |
+
+Training resumed from epoch 50 with the corrected evaluator. Logged AP values
+before this point are audit history and must not enter the paper.
+
 ## Queue
 
-`scripts/queue_dfine_gpu6.sh` is running and reboot-safe. It resumed from the epoch-0 checkpoint after the evaluation OOM and now evaluates with batch 2. `scripts/queue_rtdetrv2_gpu4.sh` is waiting for `cf_s45` and its evaluator to release GPU4.
+`scripts/queue_dfine_gpu6.sh` is running and reboot-safe. It resumed from the epoch-0 checkpoint after the evaluation OOM, evaluates with batch 2, and resumed from epoch 50 after the COCO category-mapping fix. `scripts/queue_rtdetrv2_gpu4.sh` is waiting for `cf_s45` and its evaluator to release GPU4.
 
 No new GPU is occupied at preparation time.

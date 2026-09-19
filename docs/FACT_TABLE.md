@@ -46,8 +46,8 @@
 | 1600 YOLOv8m-P2 controls | batch 2 |
 | RT-DETR-L baseline | 640 px, batch 4, 100 epochs |
 | RT-DETR-L batch-matched control | 640 px, batch 2, 100 epochs; running |
-| 960-px batch-matched base | 960 px, batch 2, 60 epochs; running |
-| D-FINE-M baseline | 640 px, total batch 8, 100 epochs; running |
+| 960-px batch-matched base/union | 960 px, batch 2, 60 epochs; complete |
+| D-FINE-M baseline | 640 px, total batch 8, 100 epochs; running from epoch 50 after evaluator fix |
 | D-FINE validation batch | 2 | Memory control on shared GPU6; does not alter training exposure |
 | Random seed policy | report n and std; no significance claim without enough seeds |
 | Server recovery | checkpoint resume plus reboot-safe queue scripts |
@@ -110,6 +110,36 @@ native/md300 law-matrix cells.
 Decomposition under md100: base-to-random volume effect is +0.0937 AP;
 random-to-union targeted residual is +0.3990 AP. The regime is therefore
 **volume-saturated, not strictly zero-sum**.
+
+### Exact 960-px batch-matched control
+
+Both arms use 960-px input, v8m-P2, batch 2, 60 epochs, and seed 0.
+
+| Arm | md100 AP | md100 AP50 | md100 APs | native AP | Tail mean |
+|---|---:|---:|---:|---:|---:|
+| Base | 28.1009 | 45.4306 | 19.4636 | 28.1722 | 0.2084 |
+| Targeted union | 31.9239 | 50.9051 | 23.6240 | 31.9794 | 0.2561 |
+
+The matched union effect is **+3.8231 md100 AP / +3.8072 native AP**;
+APs improves by +4.1603 points and the tail mean by +4.7704 points. This
+replaces the legacy batch6-base vs batch2-union subtraction for strict
+mechanism claims.
+
+### D-FINE COCO category-mapping correction
+
+The first 50 logged D-FINE COCO AP values are invalid for paper use. Detector
+labels were zero-based VisDrone classes, while the COCO ground truth used
+category IDs 1--10; the upstream evaluator passed labels through without the
+dataset-specific `label2category` remap. The training weights and loss were
+unaffected. A validation-batch-8 sanity check on checkpoint 49 gave:
+
+| Evaluator state | COCO AP | AP50 | APs |
+|---|---:|---:|---:|
+| Before category remap | 2.8 | 4.9 | 2.2 |
+| After `label2category` remap | 30.2 | 49.1 | 20.2 |
+
+Training resumed from epoch 50; epoch 51 is the first fully corrected logged evaluation. Final paper
+metrics must come only from corrected evaluations.
 
 ### Exposure-aware attribution at 1600 px, md100
 

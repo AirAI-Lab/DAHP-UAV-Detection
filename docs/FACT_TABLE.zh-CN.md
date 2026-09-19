@@ -44,8 +44,8 @@
 | 1600 YOLOv8m-P2 controls | batch 2 |
 | RT-DETR-L baseline | 640 px, batch 4, 100 epochs |
 | RT-DETR-L batch 匹配对照 | 640 px, batch 2, 100 epochs；运行中 |
-| 960 px batch 匹配 base | 960 px, batch 2, 60 epochs；运行中 |
-| D-FINE-M baseline | 640 px, total batch 8, 100 epochs；运行中 |
+| 960 px batch 匹配 base/union | 960 px, batch 2, 60 epochs；已完成 |
+| D-FINE-M baseline | 640 px, total batch 8, 100 epochs；修复 evaluator 后从 epoch 50 续跑 |
 | D-FINE 验证 batch | 2 | 共享 GPU6 的显存控制；不改变训练曝光 |
 | 种子策略 | 报告 n、均值和标准差；样本不足不使用显著性表述 |
 | 服务器恢复 | checkpoint resume + reboot-safe queue scripts |
@@ -106,6 +106,34 @@
 md100 分解：base→random 的 volume效应为 `+0.0937 AP`；random→union 的
 targeted residual 为 `+0.3990 AP`。因此该 regime 是 **volume-saturated**，
 不是严格 zero-sum。
+
+### 960 px exact batch 匹配对照
+
+两条 arm 均为 960 px 输入、v8m-P2、batch 2、60 epochs、seed 0。
+
+| Arm | md100 AP | md100 AP50 | md100 APs | native AP | Tail mean |
+|---|---:|---:|---:|---:|---:|
+| Base | 28.1009 | 45.4306 | 19.4636 | 28.1722 | 0.2084 |
+| Targeted union | 31.9239 | 50.9051 | 23.6240 | 31.9794 | 0.2561 |
+
+匹配后的 union 效应为 **+3.8231 md100 AP / +3.8072 native AP**；
+APs 提升 `+4.1603` 点，tail mean 提升 `+4.7704` 点。严格机制 claim
+应使用该结果，替代旧 batch6 base vs batch2 union 的直接相减。
+
+### D-FINE COCO 类别映射修正
+
+前 50 个 log 中的 D-FINE COCO AP 不能用于论文。Detector 输出的是
+0-based VisDrone 类别，而 COCO GT 使用 category ID 1--10；上游 evaluator
+未做数据集特定 `label2category` 映射。训练权重和 loss 不受影响。
+checkpoint 49 的 batch-8 sanity check 结果：
+
+| Evaluator 状态 | COCO AP | AP50 | APs |
+|---|---:|---:|---:|
+| 类别映射修正前 | 2.8 | 4.9 | 2.2 |
+| `label2category` 修正后 | 30.2 | 49.1 | 20.2 |
+
+训练已使用修正后的 COCO evaluator 从 epoch 50 恢复。论文最终指标只能
+来自修正后的评估。
 
 ### 1600 px 曝光归因，md100
 

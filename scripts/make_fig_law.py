@@ -40,8 +40,8 @@ plt.rcParams.update(
 )
 
 res = [640, 960, 1280, 1600, 1920]
-base = [27.27, 30.26, 36.20, 38.07, 35.67]
-union = [27.48, 33.41, 36.25, 38.85, 39.50]
+base = [27.27, 28.17, 36.20, 38.07, 35.67]
+union = [27.48, 31.98, 36.25, 38.85, 39.50]
 matched = [None, None, None, None, 39.01]
 delta = [u - b for u, b in zip(union, base)]
 regime = ["unlearn.", "under-fit", "volume-sat.", "sweet", "expos.-lim."]

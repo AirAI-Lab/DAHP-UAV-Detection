@@ -68,8 +68,27 @@ D-FINE 使用 Objects365+COCO checkpoint tuning。RT-DETRv2 使用官方 COCO EM
 - RT-DETRv2 checkpoint tuning load：通过。
 - 已用 `PResNet.pretrained: False` 禁止 RT-DETRv2 额外下载 backbone。
 
+## D-FINE evaluator 修正
+
+batch-8 validation sanity check 暴露出 COCO category-ID 映射错误。D-FINE
+输出 0-based detector labels，而 VisDrone COCO GT 使用 category ID 1--10。
+上游 evaluator 未做数据集特定 `label2category` 映射，导致 AP 无效；但框和
+类别的轻量诊断指标合理。训练和 loss 不受影响。
+
+`src/solver/det_engine.py` 现在仅在 COCO evaluation 前通过
+`data_loader.dataset.label2category` 转换 detector labels；轻量 validator
+继续使用 0-based labels。checkpoint 49 结果：
+
+| Evaluator | AP | AP50 | APs |
+|---|---:|---:|---:|
+| 映射修正前，validation batch 8 | 2.8 | 4.9 | 2.2 |
+| 映射修正后，validation batch 8 | 30.2 | 49.1 | 20.2 |
+
+训练已使用修正后的 evaluator 从 epoch 50 恢复。此前的 log AP 仅作为审计
+历史，不得写入论文。
+
 ## 队列
 
-`scripts/queue_dfine_gpu6.sh` 正在运行且已配置 reboot-safe。它在评估 OOM 后从 epoch-0 checkpoint 恢复，当前验证 batch 为 2。`scripts/queue_rtdetrv2_gpu4.sh` 正在等待 `cf_s45` 及评估进程释放 GPU4。
+`scripts/queue_dfine_gpu6.sh` 正在运行且已配置 reboot-safe。它在评估 OOM 后从 epoch-0 checkpoint 恢复，当前验证 batch 为 2；COCO 类别映射修正后已从 epoch 50 恢复。`scripts/queue_rtdetrv2_gpu4.sh` 正在等待 `cf_s45` 及评估进程释放 GPU4。
 
 准备阶段不占用新的 GPU。

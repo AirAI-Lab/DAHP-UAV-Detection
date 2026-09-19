@@ -1,0 +1,24 @@
+diff --git a/src/solver/det_engine.py b/src/solver/det_engine.py
+--- a/src/solver/det_engine.py
++++ b/src/solver/det_engine.py
+@@
+         res = {target["image_id"].item(): output for target, output in zip(targets, results)}
+         if coco_evaluator is not None:
+-            coco_evaluator.update(res)
++            # COCO evaluation expects dataset category IDs, while detector
++            # outputs contiguous zero-based labels for non-COCO datasets.
++            # Keep zero-based labels for the lightweight validator, but remap
++            # them for the COCO evaluator.
++            label2category = data_loader.dataset.label2category
++            coco_res = {}
++            for target, output in zip(targets, results):
++                coco_labels = torch.tensor(
++                    [label2category[int(x.item())] for x in output["labels"].flatten()],
++                    device=output["labels"].device,
++                ).reshape(output["labels"].shape)
++                coco_res[target["image_id"].item()] = {
++                    "labels": coco_labels,
++                    "boxes": output["boxes"],
++                    "scores": output["scores"],
++                }
++            coco_evaluator.update(coco_res)

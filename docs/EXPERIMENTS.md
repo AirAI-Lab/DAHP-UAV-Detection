@@ -24,7 +24,8 @@ trained: a base model and a union-sampling variant (matched epochs). The
 difference dAP as a function of resolution characterizes the regime:
 
 - 640: dAP ~ +0.2 (learnability lower bound; tail objects unresolvable)
-- 960: dAP ~ +3.2 (under-fitted; sampling strongly positive-sum)
+- 960: new batch-matched base/union = 28.10/31.92 md100 AP (+3.82);
+  native = 28.17/31.98 (+3.81); APs +4.16 and tail mean +4.77
 - 1280: exact same-evaluator base/random/union = 34.63/34.72/35.12 md100 AP;
   volume is nearly saturated (+0.09), while targeted union retains +0.40 over
   random (volume-saturated, not strictly zero-sum)
@@ -58,6 +59,10 @@ images after 10 warmup images (`scripts/bench_fps.py`).
 Completed: modern YOLO11/YOLO12/YOLO26 baselines, complete YOLOv8l/P2 ladder,
 1920 exposure-matched control, five random-volume seeds, exact 1280
 base/random/union controls, UAVDT transfer, and online two-arm prediction.
+The exact 960 batch-matched base/union control is also complete.
 
 Pending final insertion: targeted-union seeds 4--5, batch-matched RT-DETR
-base/union, and the running D-FINE / RT-DETRv2 baselines.
+base/union, and the running D-FINE / RT-DETRv2 baselines. D-FINE's first 49
+logged COCO AP values used an invalid category-ID mapping and are retained
+only as audit history; training resumed from epoch 50 after correcting the
+evaluator.

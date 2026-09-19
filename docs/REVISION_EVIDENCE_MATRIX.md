@@ -18,8 +18,8 @@ after volume effects are controlled.
 |---|---|---|---|---|---|
 | RQ1 | Does scale pathology dominate baseline behavior? | 85.3% <32 px; complete YOLOv8l vs P2 ladder at 640/1280/1600 | Same detector family and native/md300 evaluator | **Supported** | None |
 | RQ2 | Are long tail and structural confusion measurable from labels only? | 45:1 ratio, 23 high-similarity pairs, van/truck axis; UAVDT profile | Label-only profiler verified against paper formula | **Supported** | Keep code/formula/figure synchronized |
-| RQ3 | Does rebalancing effectiveness depend on regime? | 640/960/1600/1920 arms; exact 1280 triplet 34.63/34.72/35.12 md100; online probe r=0.983 | Matched detector, epochs, and evaluation; exact 1280 uses one evaluator for all arms | **Supported with single-seed 1280 caveat** | Optionally replicate exact 1280 triplet |
-| RQ4 | Is the gain caused by volume/exposure or targeted sampling? | Exact 1280: volume +0.09, targeted +0.40; 1600 md100: R 36.55, random 36.91, targeted 37.09; 1920 exposure-matched control | Volume-matched random controls and 120-epoch base control | **Partially supported** | Finish targeted n=5 at 1600; exact 1280 is single-seed |
+| RQ3 | Does rebalancing effectiveness depend on regime? | 640/960/1600/1920 arms; exact 960 pair 28.10/31.92 md100; exact 1280 triplet 34.63/34.72/35.12 md100; online probe r=0.983 | Matched detector, epochs, batch, and evaluation for exact 960/1280 controls | **Supported with single-seed exact-control caveat** | Optionally replicate exact controls |
+| RQ4 | Is the gain caused by volume/exposure or targeted sampling? | Exact 960 union +3.82; exact 1280: volume +0.09, targeted +0.40; 1600 md100: R 36.55, random 36.91, targeted 37.09; 1920 exposure-matched control | Volume-matched random controls and 120-epoch base control | **Partially supported** | Finish targeted n=5 at 1600; exact controls are single-seed |
 | RQ5 | Is the principle predictive rather than post hoc? | 30-epoch two-arm probe, r=0.983, 5/5 separation | Uses only early epochs; failed single-arm control disclosed | **Supported** | Optional prospective decision simulation |
 | RQ6 | Does the policy transfer across datasets? | UAVDT union +0.69 AP, tail +1.69; frequency-only ineffective | Same profiler and recipe, no retuning | **Supported** | None unless more datasets requested |
 | RQ7 | Is the policy detector-family independent? | RT-DETR base complete; RT-DETR union in progress | Same 640 px / 100 ep budget | **Pending** | Finish and evaluate RT-DETR union |
@@ -38,7 +38,7 @@ after volume effects are controlled.
 | Principle is retrospective | Changed from law to principle; online two-arm probe added | Strong | Optional prospective simulation |
 | Exposure/capacity/learnability confounded | 640 learnability, exact 1280 volume/targeted decomposition, 1920 exposure matching, complete capacity ladder | Strong | Keep protocols separated |
 | SOTA claim too strong | Removed unpublished high-res RemDet claim; wording is strongest reproduced comparator | Strong | Keep literature rows separate |
-| Modern baselines missing | YOLO11/12/26 and RT-DETR-L included; D-FINE running and RT-DETRv2 queued | Moderate | Complete and evaluate both DETR baselines |
+| Modern baselines missing | YOLO11/12/26 and RT-DETR-L included; D-FINE running and RT-DETRv2 queued; D-FINE category mapping fixed | Moderate | Complete and evaluate both DETR baselines |
 | Too few seeds | Random n=5; targeted n=3 currently | Moderate | Two targeted seeds running |
 | Zero architecture change ambiguous | Policy adds no architecture change; P2 disclosed and ablated | Strong | Keep exact wording |
 | Efficiency overclaim | Desktop-GPU phrasing, no edge claim | Moderate | Upgrade latency protocol |
@@ -52,8 +52,8 @@ after volume effects are controlled.
 
 1. **Learnability lower bound.** At 640 px, duplication gives only +0.21 AP and
    tail performance remains unchanged.
-2. **Volume-driven rescue.** At 960 px, union gives +3.15 AP and the volume
-   component dominates.
+2. **Volume-driven rescue.** At 960 px, the batch-matched pair gives +3.82 md100 AP,
+   +4.16 APs, and +4.77 tail-mean points.
 3. **Volume-saturated behavior.** Exact 1280 controls give base/random/union =
    34.63/34.72/35.12 md100 AP: random volume is nearly neutral, while targeted
    union retains a +0.40 AP residual.
@@ -119,6 +119,7 @@ after volume effects are controlled.
 - [x] 1920 exposure-matched control
 - [x] Five-seed random-volume control
 - [x] Exact 1280 base/random/union controls
+- [x] Exact 960 batch-matched base/union controls
 - [x] Fig. 8 regenerated with the exact 1280 decomposition
 - [x] Dual evaluation protocols
 - [x] Public repository and manuscript synchronization
