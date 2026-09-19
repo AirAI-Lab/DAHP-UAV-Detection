@@ -1,6 +1,6 @@
 # Run 状态板
 
-快照时间：2026-09-19 13:44 UTC / 北京时间 21:44。
+快照时间：2026-09-19 16:40 UTC / 北京时间 2026-09-20 00:40。
 
 ## 服务器与队列
 
@@ -11,11 +11,11 @@
 
 | GPU | Run | 进度 | 当前 best AP | 状态 |
 |---:|---|---:|---:|---|
-| 0 | `base_rtdetrl_b2_640` | 54/100 | native 4.841 | batch-2 RT-DETR-L 对照 |
-| 1 | `s960_rand_b2` | 21/60 | native 31.075 | exact random-volume 对照 |
-| 4 | `base_rtdetrv2_l_640` | epoch 0 重启 | 待定 | 类别映射已修复；total batch 8 |
-| 5 | `rtdetr_union_640` | 61/100 | native 4.907 | RT-DETR union arm |
-| 6 | `base_dfine_m_640` | log 89/100 | 修正后 md100 31.532 @ ep86 | COCO 类别映射已修复 |
+| 0 | `base_rtdetrl_b2_640` | 61/100 | native 5.656 | batch-2 RT-DETR-L 对照 |
+| 1 | `s960_rand_b2` | 31/60 | native 32.262 | exact random-volume 对照 |
+| 4 | `base_rtdetrv2_l_640` | 10/100 | 修正后 md100 24.654 | 类别映射已修复；total batch 8 |
+| 5 | `rtdetr_union_640` | 65/100 | native 4.907 | RT-DETR union arm |
+| 6 | `base_dfine_m_640` | 从 log ep71 干净重启 stage 2 | 最终值待定 | queue epoch 统计已修复 |
 
 GPU2、GPU3、GPU7 当前不属于我们的活跃分配。GPU4 上还有其他用户进程，但
 RT-DETRv2 的分配仍在披露预算内。
@@ -35,14 +35,18 @@ RT-DETRv2 的分配仍在披露预算内。
   COCO log AP 才有效。
 - RT-DETRv2 遇到同类 category-ID 映射问题，在任何有效 epoch 完成前已修复。
   失败的 epoch-0 artifacts 已删除，并干净重启训练。
+- D-FINE 曾完成一次 stage-2，但 queue 用 log 行数而非最大 epoch 判断进度，
+  导致从 epoch 72 重复启动 stage 2。重复 rows 已归档到
+  `log.duplicate_stage2_20260919.jsonl`，干净 log 恢复到 epochs 1--71，
+  正在为论文最终值精确重跑一次 stage 2。
 
 ## 预计完成
 
-- D-FINE-M：剩余 log epochs 约 1--2 小时，另加最终审计。
-- `s960_rand_b2`：视负载约 8--11 小时。
-- batch-2 RT-DETR-L base：约 17--20 小时。
-- RT-DETR union：视负载约 15--22 小时。
-- RT-DETRv2-L：刚启动，待 epoch 0--2 稳定后重新估计。
+- D-FINE-M 干净 stage 2：约 4--5 小时，另加最终审计。
+- `s960_rand_b2`：视负载约 7--9 小时。
+- batch-2 RT-DETR-L base：约 14--17 小时。
+- RT-DETR union：视负载约 18--24 小时。
+- RT-DETRv2-L：按当前早期速度约 20--26 小时。
 
 ## 下一步
 

@@ -89,6 +89,16 @@ validator continues to use zero-based labels. On checkpoint 49:
 Training resumed from epoch 50 with the corrected evaluator. Logged AP values
 before this point are audit history and must not enter the paper.
 
+### D-FINE stage-2 accounting correction
+
+Upstream D-FINE uses a two-stage schedule and logs epochs 1--99 for a declared
+100-epoch schedule. The first queue supervisor mistakenly used physical log-line
+count, saw 99 lines after completion, and relaunched stage 2 from the epoch-71
+stage-one checkpoint. The duplicate rows were archived rather than deleted, the
+clean log was restored to epochs 1--71, and the queue now tracks maximum logged
+epoch. Stage 2 is being rerun exactly once; only this clean pass will be used
+for the final D-FINE row.
+
 ## RT-DETRv2 category-mapping correction
 
 The first RT-DETRv2 launch repeated a device-side index assertion. The cause

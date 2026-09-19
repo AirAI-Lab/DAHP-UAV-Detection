@@ -87,6 +87,14 @@ batch-8 validation sanity check 暴露出 COCO category-ID 映射错误。D-FINE
 训练已使用修正后的 evaluator 从 epoch 50 恢复。此前的 log AP 仅作为审计
 历史，不得写入论文。
 
+### D-FINE stage-2 进度统计修正
+
+上游 D-FINE 使用两阶段 schedule；声明 100 epochs 时 log 会记录 epochs
+1--99。首个 queue supervisor 误用 log 物理行数判断进度，在完成后看到 99
+行并从 epoch-71 stage-one checkpoint 重复启动 stage 2。重复 rows 已归档，
+干净 log 恢复到 epochs 1--71；queue 现在按最大 logged epoch 判断进度。
+论文最终 D-FINE 行只使用当前精确重跑一次的 clean stage-2 pass。
+
 ## RT-DETRv2 类别映射修正
 
 RT-DETRv2 首次启动后重复出现 device-side index assertion。原因与 D-FINE
