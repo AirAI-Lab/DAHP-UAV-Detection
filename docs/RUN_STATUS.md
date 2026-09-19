@@ -14,7 +14,7 @@ Our active jobs use five GPUs:
 |---:|---|---:|---:|---|
 | 0 | `base_rtdetrl_b2_640` | 54/100 | native 4.841 | batch-2 RT-DETR-L control |
 | 1 | `s960_rand_b2` | 21/60 | native 31.075 | exact random-volume control |
-| 4 | `base_rtdetrv2_l_640` | just started | pending | RT-DETRv2-L, total batch 8 |
+| 4 | `base_rtdetrv2_l_640` | restarted epoch 0 | pending | category mapping fixed; total batch 8 |
 | 5 | `rtdetr_union_640` | 61/100 | native 4.907 | RT-DETR union arm |
 | 6 | `base_dfine_m_640` | 89/100 logged | corrected md100 31.532 @ ep86 | COCO category remap fixed |
 
@@ -35,6 +35,9 @@ within the disclosed budget.
   directional evidence, not a significance claim.
 - D-FINE evaluator was corrected for VisDrone category IDs. Only epoch 51
   onward is valid for COCO log AP.
+- RT-DETRv2 hit the same category-ID mismatch and was fixed before any valid
+  epoch completed. Its failed epoch-0 artifacts were removed and training
+  restarted cleanly.
 
 ## Expected completion
 

@@ -13,7 +13,7 @@
 |---:|---|---:|---:|---|
 | 0 | `base_rtdetrl_b2_640` | 54/100 | native 4.841 | batch-2 RT-DETR-L 对照 |
 | 1 | `s960_rand_b2` | 21/60 | native 31.075 | exact random-volume 对照 |
-| 4 | `base_rtdetrv2_l_640` | 刚启动 | 待定 | RT-DETRv2-L，total batch 8 |
+| 4 | `base_rtdetrv2_l_640` | epoch 0 重启 | 待定 | 类别映射已修复；total batch 8 |
 | 5 | `rtdetr_union_640` | 61/100 | native 4.907 | RT-DETR union arm |
 | 6 | `base_dfine_m_640` | log 89/100 | 修正后 md100 31.532 @ ep86 | COCO 类别映射已修复 |
 
@@ -33,6 +33,8 @@ RT-DETRv2 的分配仍在披露预算内。
   显著性声明。
 - D-FINE evaluator 已修复 VisDrone category-ID 映射。只有 epoch 51 以后的
   COCO log AP 才有效。
+- RT-DETRv2 遇到同类 category-ID 映射问题，在任何有效 epoch 完成前已修复。
+  失败的 epoch-0 artifacts 已删除，并干净重启训练。
 
 ## 预计完成
 

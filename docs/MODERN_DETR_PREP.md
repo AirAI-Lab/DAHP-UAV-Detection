@@ -89,8 +89,23 @@ validator continues to use zero-based labels. On checkpoint 49:
 Training resumed from epoch 50 with the corrected evaluator. Logged AP values
 before this point are audit history and must not enter the paper.
 
+## RT-DETRv2 category-mapping correction
+
+The first RT-DETRv2 launch repeated a device-side index assertion. The cause
+was the same 1-based COCO category-ID versus 0-based detector-label mismatch:
+VisDrone category ID 10 indexed outside a 10-class head. Two paths were fixed:
+
+1. `src/data/dataset/coco_dataset.py` maps declared category IDs through
+   `category2label` for training targets.
+2. `src/solver/det_engine.py` maps detector labels through `label2category`
+   only for COCO evaluation.
+
+The failed epoch-0 run directory was removed, the queue now backs off for
+300 seconds after a nonzero exit, and training restarted cleanly from epoch 0.
+The restarted process has had no category-index assertion.
+
 ## Queue
 
-`scripts/queue_dfine_gpu6.sh` is running and reboot-safe. It resumed from the epoch-0 checkpoint after the evaluation OOM, evaluates with batch 2, and resumed from epoch 50 after the COCO category-mapping fix. `scripts/queue_rtdetrv2_gpu4.sh` is waiting for `cf_s45` and its evaluator to release GPU4.
+`scripts/queue_dfine_gpu6.sh` is running and reboot-safe. It resumed from the epoch-0 checkpoint after the evaluation OOM, evaluates with batch 2, and resumed from epoch 50 after the COCO category-mapping fix. `scripts/queue_rtdetrv2_gpu4.sh` restarted RT-DETRv2 from epoch 0 after its category-mapping fix and now backs off after failures.
 
 No new GPU is occupied at preparation time.

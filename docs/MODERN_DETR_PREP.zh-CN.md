@@ -87,8 +87,22 @@ batch-8 validation sanity check 暴露出 COCO category-ID 映射错误。D-FINE
 训练已使用修正后的 evaluator 从 epoch 50 恢复。此前的 log AP 仅作为审计
 历史，不得写入论文。
 
+## RT-DETRv2 类别映射修正
+
+RT-DETRv2 首次启动后重复出现 device-side index assertion。原因与 D-FINE
+相同：COCO category ID 为 1-based，而 detector labels 为 0-based；VisDrone
+category ID 10 超出 10-class head 的有效索引。已修复两条路径：
+
+1. `src/data/dataset/coco_dataset.py` 在训练 target 中通过
+   `category2label` 映射声明类别。
+2. `src/solver/det_engine.py` 仅在 COCO evaluation 前通过
+   `label2category` 映射 detector labels。
+
+失败的 epoch-0 run 目录已删除；queue 在非零退出后 backoff 300 秒，并已从
+epoch 0 干净重启。重启后的进程没有再出现 category-index assertion。
+
 ## 队列
 
-`scripts/queue_dfine_gpu6.sh` 正在运行且已配置 reboot-safe。它在评估 OOM 后从 epoch-0 checkpoint 恢复，当前验证 batch 为 2；COCO 类别映射修正后已从 epoch 50 恢复。`scripts/queue_rtdetrv2_gpu4.sh` 正在等待 `cf_s45` 及评估进程释放 GPU4。
+`scripts/queue_dfine_gpu6.sh` 正在运行且已配置 reboot-safe。它在评估 OOM 后从 epoch-0 checkpoint 恢复，当前验证 batch 为 2；COCO 类别映射修正后已从 epoch 50 恢复。`scripts/queue_rtdetrv2_gpu4.sh` 在类别映射修正后已从 epoch 0 重启，并在失败时 backoff。
 
 准备阶段不占用新的 GPU。
