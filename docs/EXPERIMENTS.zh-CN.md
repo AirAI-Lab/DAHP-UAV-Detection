@@ -5,7 +5,7 @@
 1. 在算力允许的情况下尽量匹配 epoch 和 batch 预算；所有偏差在论文中明确披露。
 2. 使用双重评估协议：COCO 风格 `maxDets=100`（md100，用于消融和主表公平协议）与 `maxDets=300`（native/Ultralytics 协议）。两者分开报告，避免协议挑选。
 3. 区分复现值与文献值：外部方法标注为 `Lit.`（论文报告值）或 `Rep.`（在我们声明的条件下复现）。无法用公开权重复现的高分辨率文献值不作为主要证据。
-4. 关键设置进行多种子实验。当前 random-volume control 为 5 个种子，targeted union 正在从 3 个种子扩展到 5 个种子。报告样本数、均值和标准差。
+4. 关键设置进行多种子实验。当前 random-volume control 与 targeted union 均为 5 个种子。报告样本数、均值和标准差。
 5. 提出的采样策略本身不改变网络结构、损失函数或推理过程。P2 结构选择单独披露并单独消融。
 
 ## 分辨率-regime 阶梯
@@ -25,10 +25,10 @@
 ```text
 R only              36.55 ± 0.21
 random volume       36.91 ± 0.29
-targeted union      37.09 ± 0.16
+targeted union      37.18 ± 0.18
 ```
 
-即 volume 贡献约 `+0.36 AP`，targeted residual 约 `+0.18 AP`。
+即 volume 贡献约 `+0.36 AP`，targeted residual 约 `+0.28 AP`。这是方向性证据，不作显著性声明。
 
 1920 px 的曝光匹配控制为：
 

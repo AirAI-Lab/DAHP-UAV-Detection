@@ -1,66 +1,57 @@
 # Run Status Board
 
-Snapshot: 2026-09-19 08:29 UTC / 16:29 Beijing.
+Snapshot: 2026-09-19 13:44 UTC / 21:44 Beijing.
 
 ## Server and queues
 
-All listed supervisors and final-evaluation watchers are reboot-safe. The
-D-FINE GPU0 retry queue was removed; D-FINE now runs alone on GPU6 with total
-batch 8. GPU0 is reserved for the batch-2 RT-DETR-L control.
+The server has been up for 6 h 14 m after its scheduled reboot. All listed
+supervisors recovered automatically and the monitored queue logs contain no new
+OOM, traceback, or failure.
 
-Our active jobs use six GPUs:
+Our active jobs use five GPUs:
 
 | GPU | Run | Progress | Current best AP | Status |
 |---:|---|---:|---:|---|
-| 0 | `base_rtdetrl_b2_640` | 39/100 epochs | native 3.804 | running alone; late convergence expected |
-| 1 | `s960_rand_b2` | launched 0/60 | pending | exact random-volume control for 960 |
-| 3 | `cf_s46` | 88/100 | native 38.729 | targeted-union seed 46 |
-| 4 | `cf_s45` | 88/100 | native 38.681 | targeted-union seed 45 |
-| 5 | `rtdetr_union_640` | 53/100 | native 4.632 | RT-DETR union arm |
-| 6 | `base_dfine_m_640` | resumed at 50/100 | corrected ckpt-49 AP 30.2 | COCO category mapping fixed; train batch 8 |
+| 0 | `base_rtdetrl_b2_640` | 54/100 | native 4.841 | batch-2 RT-DETR-L control |
+| 1 | `s960_rand_b2` | 21/60 | native 31.075 | exact random-volume control |
+| 4 | `base_rtdetrv2_l_640` | just started | pending | RT-DETRv2-L, total batch 8 |
+| 5 | `rtdetr_union_640` | 61/100 | native 4.907 | RT-DETR union arm |
+| 6 | `base_dfine_m_640` | 89/100 logged | corrected md100 31.532 @ ep86 | COCO category remap fixed |
 
-`s960_base_b2` completed all 60 epochs. Its released GPU1 is now used by the
-exact 960 random-volume control. GPU2 and GPU7 belong to other users.
+GPU2, GPU3, and GPU7 are not part of our active allocation at this snapshot.
+GPU4 also contains another user's process, but the RT-DETRv2 allocation remains
+within the disclosed budget.
 
-## Completed fairness controls
+## Completed since the last board
 
-- Exact 1280 base/random/union: md100 34.6296 / 34.7233 / 35.1223; native
-  34.6859 / 34.7770 / 35.1772.
-- Exact 1280 interpretation: volume +0.0937, targeted residual +0.3990 md100.
-- Exact 960 batch-matched base/union: md100 28.1009/31.9239 (+3.8231);
-  native 28.1722/31.9794 (+3.8072); APs +4.1603; tail mean +4.7704.
-- The matching 960 random-volume arm uses the same 12,276-image exposure,
-  batch 2, 60 epochs, and seed 0; it will separate volume from targeted
-  reallocation without relying on the legacy 77/23 decomposition.
-- D-FINE COCO category-ID remap fixed. Checkpoint 49 changes from invalid
-  AP 2.8 to corrected AP 30.2 under validation batch 8.
-- Manuscript attribution table, Fig. 8, and bilingual fact/evidence documents
-  now contain the exact 1280 triplet.
-
-## Queued work
-
-- `queue_rtdetrv2_gpu4.sh` waits for `cf_s45` and its final evaluation to
-  release GPU4, then trains RT-DETRv2-L at 640 px, total batch 8, 100 epochs.
-- The final-evaluation watcher will evaluate `cf_s45`, `cf_s46`, and
-  `rtdetr_union_640` when each completes.
+- `cf_s45`: 100/100; native best 38.681.
+- `cf_s46`: 100/100; native best 38.729.
+- Final md100/native evaluations for both seeds completed.
+- Targeted union at 1600 px is now n=5:
+  - R only: 36.548 ± 0.207;
+  - random volume: 36.906 ± 0.286;
+  - targeted union: 37.181 ± 0.178.
+- Decomposition: volume +0.358, targeted residual +0.275 AP. This is
+  directional evidence, not a significance claim.
+- D-FINE evaluator was corrected for VisDrone category IDs. Only epoch 51
+  onward is valid for COCO log AP.
 
 ## Expected completion
 
-Current rough estimates:
-
-- `cf_s45` / `cf_s46`: about 5--6 hours plus evaluation at current speed.
-- D-FINE-M: about 8--9 hours from epoch 50.
-- Batch-2 RT-DETR-L base: about 22--24 hours.
-- RT-DETR union: about 25--35 hours depending on load.
-
-Server reboots and load changes can shift these estimates.
+- D-FINE-M: about 1--2 hours for the remaining logged epochs, plus final audit.
+- `s960_rand_b2`: about 8--11 hours depending on load.
+- Batch-2 RT-DETR-L base: about 17--20 hours.
+- RT-DETR union: about 15--22 hours depending on load.
+- RT-DETRv2-L: newly started; estimate after epoch 0--2 stabilizes.
 
 ## Next actions
 
-1. Replace the three-seed 1600 targeted statistic with n=5 after seeds 45/46.
-2. Insert the exact 960 random-volume terminal value when it completes.
-3. Add batch-matched RT-DETR base/union cross-family evidence only after both
-   complete and use one evaluator.
-4. Parse D-FINE / RT-DETRv2 upstream COCO logs into the common result schema.
-5. Keep protocol-separated values in separate table blocks; never subtract
-   md100 from native/md300.
+1. Run the D-FINE final batch-8 validation audit and parse the corrected COCO
+   result into the common result schema.
+2. Insert `s960_rand_b2` when it completes to replace the legacy 77/23
+   decomposition with an exact same-protocol triplet.
+3. Wait for batch-matched RT-DETR base/union before making the
+   detector-family claim.
+4. Track RT-DETRv2 through its early epochs and adapt its evaluator output.
+5. Keep native/md300 and md100 blocks separate; never mix protocols in a
+   subtraction.

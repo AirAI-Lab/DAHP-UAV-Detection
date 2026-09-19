@@ -148,11 +148,11 @@ metrics must come only from corrected evaluations.
 |---|---:|---:|---:|
 | R only | 3 | 36.55 ± 0.21 | 0.339 |
 | Random volume control | 5 | 36.91 ± 0.29 | 0.341 |
-| Targeted union | 3 completed | 37.09 ± 0.16 | 0.346 |
+| Targeted union | 5 | 37.18 ± 0.18 | 0.309 |
 
 Current interpretation: volume explains +0.36 AP; targeted reallocation adds a
-+0.18 AP residual. Two additional targeted seeds are running and must replace
-this three-seed entry when complete.
++0.28 AP residual. This is a directional five-seed effect, not a significance
+claim.
 
 ### 1920 px exposure-matched control
 

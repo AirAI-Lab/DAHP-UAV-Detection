@@ -142,9 +142,9 @@ checkpoint 49 的 batch-8 sanity check 结果：
 |---|---:|---:|---:|
 | R only | 3 | 36.55 ± 0.21 | 0.339 |
 | Random volume control | 5 | 36.91 ± 0.29 | 0.341 |
-| Targeted union | 3 completed | 37.09 ± 0.16 | 0.346 |
+| Targeted union | 5 | 37.18 ± 0.18 | 0.309 |
 
-当前解释：volume 贡献 `+0.36 AP`，targeted reallocation 贡献 `+0.18 AP`。两个额外 targeted seeds 完成后必须替换该 3-seed 统计。
+当前解释：volume 贡献 `+0.36 AP`，targeted reallocation 贡献 `+0.28 AP`。这是 5-seed 方向性效应，不作显著性声明。
 
 ### 1920 px 曝光匹配控制
 

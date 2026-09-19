@@ -13,7 +13,7 @@ UAV 检测精度受长尾、尺度与曝光 regime 耦合影响；label-only pro
 | RQ1 | 尺度病理是否主导 baseline 行为？ | 85.3% <32 px；640/1280/1600 完整 v8l vs P2 ladder | 同 detector family、同 native/md300 evaluator | **Supported** | 无 |
 | RQ2 | 长尾与结构混淆能否仅由标签度量？ | 45:1、23 个高相似类别对、van/truck axis；UAVDT profile | label-only profiler 与论文公式验证 | **Supported** | 保持代码/公式/图一致 |
 | RQ3 | rebalancing 效果是否依赖 regime？ | 640/960/1600/1920；exact 960 pair 28.10/31.92 md100；exact 1280 triplet 34.63/34.72/35.12 md100；online probe r=0.983 | exact 960/1280 均匹配 detector、epoch、batch 和 evaluator | **Supported，带 exact controls 单 seed 限制** | 可选复现 exact controls |
-| RQ4 | 增益来自曝光还是 targeted sampling？ | exact 960 union +3.82；exact 1280：volume +0.09、targeted +0.40；1600 md100: R 36.55 / random 36.91 / targeted 37.09；1920 exposure-matched control | random-volume 与 120-epoch base control | **Partially supported** | 1600 targeted 完成n=5；exact 960 random 在跑 |
+| RQ4 | 增益来自曝光还是 targeted sampling？ | exact 960 union +3.82；exact 1280：volume +0.09、targeted +0.40；1600 5-seed 均值 R 36.55 / random 36.91 / targeted 37.18；1920 exposure-matched control | random-volume 与 120-epoch base control | **方向性 supported** | exact 960 random 在跑；避免显著性表述 |
 | RQ5 | 原理是否具有预测性？ | 30-epoch two-arm probe，r=0.983，5/5 分离 | 只使用早期 epoch；披露失败 single-arm control | **Supported** | 可选 prospective simulation |
 | RQ6 | 策略是否跨数据集迁移？ | UAVDT union +0.69 AP，tail +1.69；frequency-only 无效 | 同 profiler 和策略，不调参 | **Supported** | 无 |
 | RQ7 | 策略是否跨 detector family？ | RT-DETR base 完成；union 在跑 | 同 640 / 100 ep | **Pending** | 完成并评估 RT-DETR union |
@@ -33,7 +33,7 @@ UAV 检测精度受长尾、尺度与曝光 regime 耦合影响；label-only pro
 | exposure/capacity/learnability 混淆 | 640 learnability、exact 1280 volume/targeted 分解、1920 exposure matching、capacity ladder | 强 | 保持协议分离 |
 | SOTA 表述过强 | 删除未公开高分辨率 RemDet claim；使用 strongest reproduced comparator | 强 | 文献行保持分离 |
 | modern baselines 缺失 | 加入 YOLO11/12/26 与 RT-DETR-L；D-FINE 在跑且类别映射已修复，RT-DETRv2 已排队 | 中 | 完成并评估两个 DETR baseline |
-| seeds 不足 | random n=5；targeted 当前 n=3 | 中 | 两个 targeted seeds 在跑 |
+| seeds 不足 | random n=5；targeted n=5 | 中 | 不使用显著性表述；报告离散度 |
 | zero architecture change 含义不清 | policy 不改结构；P2 单独披露和消融 | 强 | 保持精确表述 |
 | efficiency 过强 | desktop GPU 表述，不称 edge | 中 | 升级 latency 协议 |
 | 负结果不可审计 | appendix audit 与 logs | 强 | 发布 JSON/configs |
@@ -47,7 +47,7 @@ UAV 检测精度受长尾、尺度与曝光 regime 耦合影响；label-only pro
 1. **Learnability lower bound**：640 px 下 duplication 仅 +0.21 AP，tail 不变。
 2. **Volume-driven rescue**：960 px batch 匹配 pair 为 union +3.82 md100 AP，volume 成分主导。
 3. **Volume-saturated behavior**：exact 1280 controls 为 base/random/union = 34.63/34.72/35.12 md100 AP；random volume 接近中性，targeted union 保留 +0.40 AP residual。
-4. **Intermediate positive-sum window**：1600 px 下 random duplication 与 targeted union 均提升 md100 AP；当前分解为 volume +0.36、targeted +0.18。
+4. **Intermediate positive-sum window**：1600 px 下 5-seed random duplication 与 targeted union 均值均提升 md100 AP；分解为 volume +0.36、targeted +0.28。
 5. **Exposure-limited regime**：1920 px same-epoch union +3.83，但 120-epoch base 恢复大部分差距；residual 为 +0.42 md100、+0.92 APs。
 
 ### 当前理论判定
@@ -133,7 +133,7 @@ UAV 检测精度受长尾、尺度与曝光 regime 耦合影响；label-only pro
 | DAHP-L 在我们协议下超过最强 reproduced UAV comparator | 是 | 38.16 vs 29.90 md100，并披露 resolution/capacity policy |
 | Union 在 1920 造成 +3.83 | 不能单独这样说 | same-epoch +3.83；exposure-matched residual +0.42 md100 |
 | exact 1280 union 超过 random | 可以，但需披露 seed | 单 seed 匹配 triplet 中 random 之上 +0.40 md100 AP |
-| Targeted union 显著超过 random | 暂不 | 当前 n=3，方向为 +0.18；等待 n=5 |
+| Targeted union 显著超过 random | 否 | n=5 下方向为 +0.28；不声称显著 |
 | Detector-family independence | 暂不 | RT-DETR union pending |
 | Official VisDrone SOTA | 否 | 仅 validation-set protocol |
 | Edge real-time | 否 | desktop RTX 3090 real-time |

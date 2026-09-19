@@ -293,9 +293,9 @@ Random volume control & 34.72 & $+0.09$ (volume) & 0.317 \\
 \textbf{Targeted union} & \textbf{35.12} & $\mathbf{+0.40}$ (targeted) & \textbf{0.322} \\
 \midrule
 \multicolumn{4}{l}{\emph{Exposure decomposition (md100, v8m-P2@1600)}}\\
-R only & $36.55^{\pm.21}$ & --- & 0.339 \\
-Random volume control & $36.91^{\pm.29}$ & $+0.36$ (volume) & 0.341 \\
-\textbf{Targeted union} & $\mathbf{37.09}^{\pm.16}$ & $+0.18$ (targeted) & \textbf{0.346} \\
+R only & $36.55^{\pm.21}$ & --- & 0.304 \\
+Random volume control & $36.91^{\pm.29}$ & $+0.36$ (volume) & 0.305 \\
+\textbf{Targeted union} & $\mathbf{37.18}^{\pm.18}$ & $\mathbf{+0.28}$ (targeted) & \textbf{0.309} \\
 \midrule
 \multicolumn{4}{l}{\emph{Native/md300 component ablation (v8m-P2@1600)}}\\
 R only (resolution control) & 38.07 & --- & 0.311 \\
@@ -304,10 +304,11 @@ R$+$C (confusion-only) & 38.68 & $+0.61$ & 0.317 \\
 \textbf{\dahpM{} (R$+$T$\cup$C)} & \textbf{38.82} & $+0.75$ & \textbf{0.318} \\
 \bottomrule
 \multicolumn{4}{l}{\footnotesize Exact 960/1280 values are one seed per arm under the same external evaluator. $^{\pm}$std at 1600\,px: R only $n{=}3$;}\\
-\multicolumn{4}{l}{\footnotesize random control $n{=}5$; targeted union currently $n{=}3$ and is being expanded to $n{=}5$.}
+\multicolumn{4}{l}{\footnotesize random and targeted controls at 1600\,px use $n{=}5$ seeds. The targeted-random difference is}\\
+\multicolumn{4}{l}{\footnotesize directional, not a significance claim.}
 \end{tabular}}
 \end{table}
-Table~\ref{tab:attribution} separates architecture, exposure, and targeted reallocation. The new batch-matched 960-px control confirms the under-fitted regime: union sampling raises md100 \ap{} from $28.10$ to $31.92$ ($+3.82$), with \aps{} increasing by $+4.16$ and the tail mean from $0.208$ to $0.256$. The exact 1280-px triplet revises the earlier zero-sum description: random duplication changes md100 \ap{} by only $+0.09$, whereas targeted union leaves a $+0.40$-\ap{} residual over the matched random control. The regime is therefore \emph{volume-saturated}, not strictly zero-sum. At 1600\,px, random volume duplication explains $+0.36$ of the $+0.54$-\ap{} R-only$\to$union gain; the targeted residual is $+0.18$~\ap{} and is accompanied by a tail-mean increase ($0.339\to0.346$). Thus the honest interpretation is not ``oversampling alone explains the gain: exposure is the larger component, while targeted union contributes a smaller directional residual. The native component ablation additionally shows that the union of tail and confusion axes outperforms either alone.
+Table~\ref{tab:attribution} separates architecture, exposure, and targeted reallocation. The new batch-matched 960-px control confirms the under-fitted regime: union sampling raises md100 \ap{} from $28.10$ to $31.92$ ($+3.82$), with \aps{} increasing by $+4.16$ and the tail mean from $0.208$ to $0.256$. The exact 1280-px triplet revises the earlier zero-sum description: random duplication changes md100 \ap{} by only $+0.09$, whereas targeted union leaves a $+0.40$-\ap{} residual over the matched random control. The regime is therefore \emph{volume-saturated}, not strictly zero-sum. At $1600$\,px, the five-seed decomposition is $36.55/36.91/37.18$~\ap{} for R-only/random/targeted: volume explains $+0.36$ of the $+0.63$ total gain, while targeted reallocation leaves a $+0.28$~\ap{} residual and raises the tail mean from $0.305$ to $0.309$. Thus the honest interpretation is not ``oversampling alone explains the gain: exposure is the larger component, while targeted union contributes a smaller directional residual. The native component ablation additionally shows that the union of tail and confusion axes outperforms either alone.
 
 \subsection{Regime Analysis}
 \label{sec:regime}

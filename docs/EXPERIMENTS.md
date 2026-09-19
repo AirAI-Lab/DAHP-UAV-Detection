@@ -29,7 +29,8 @@ difference dAP as a function of resolution characterizes the regime:
 - 1280: exact same-evaluator base/random/union = 34.63/34.72/35.12 md100 AP;
   volume is nearly saturated (+0.09), while targeted union retains +0.40 over
   random (volume-saturated, not strictly zero-sum)
-- 1600: same-epoch dAP +0.78 on the matched YOLOv8m-P2 family; md100 decomposition is random volume +0.36 and targeted residual +0.18
+- 1600: five-seed md100 means are R-only 36.55, random 36.91, targeted
+  37.18; decomposition is volume +0.36 and targeted residual +0.28
 - 1920: same-epoch dAP +3.83, but the 120-epoch exposure-matched residual is +0.49 native / +0.42 md100 (+0.92 APs)
 
 ## UAVDT transfer
