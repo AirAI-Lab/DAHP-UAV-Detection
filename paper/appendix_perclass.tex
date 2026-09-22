@@ -1,0 +1,69 @@
+\begin{table*}[!t]
+\centering
+\caption{Per-class AP for key configurations (native protocol). UAVDT rows use its 4-class vehicle taxonomy.}
+\label{tab:perclass}
+\resizebox{\textwidth}{!}{%
+\begin{tabular}{lcccccccccc}
+\toprule
+Configuration & ped & peo & bic & car & van & tru & tri & awn & bus & mot \\
+\midrule
+Baseline v8m-P2@1280 & 36.6 & 25.4 & 19.3 & 66.0 & 43.9 & 35.8 & 27.6 & 15.5 & 56.9 & 35.0 \\
+R only (v8m-P2@1600) & 38.7 & 27.3 & 21.9 & 67.0 & 45.5 & 37.3 & 29.1 & 18.8 & 58.2 & 37.0 \\
+DAHP-M (R+T$\cup$C) & 39.0 & 27.5 & 22.0 & 67.4 & 46.8 & 38.8 & 31.1 & 18.7 & 59.4 & 37.9 \\
+$V_L$ (v8l no-P2@1600) & 37.6 & 26.1 & 22.0 & 66.7 & 44.5 & 39.2 & 30.1 & 18.0 & 58.4 & 36.9 \\
+$V_L{+}P_2$ & 39.0 & 27.5 & 23.4 & 67.6 & 46.6 & 38.9 & 31.4 & 18.8 & 59.7 & 37.5 \\
+DAHP-L & 40.2 & 28.8 & 24.0 & 67.9 & 47.4 & 40.4 & 31.4 & 20.1 & 61.4 & 38.9 \\
+DAHP-L seed43 & 40.4 & 29.0 & 24.1 & 67.9 & 47.0 & 39.9 & 31.3 & 19.6 & 58.9 & 38.9 \\
+UAVDT base & --- & --- & --- & 50.7 & 36.7 & 14.9 & --- & --- & 49.2 & --- \\
+UAVDT freq-only & --- & --- & --- & 50.9 & 37.3 & 14.0 & --- & --- & 49.0 & --- \\
+UAVDT union (DAHP) & --- & --- & --- & 50.6 & 36.1 & 14.4 & --- & --- & 53.1 & --- \\
+\bottomrule
+\end{tabular}}
+\end{table*}
+\begin{table}[!t]
+\centering
+\caption{Label-only threshold sensitivity of the VisDrone confusion axis. Cell entries give $\mathcal{A}$ and, in parentheses, the number of graph edges above the threshold. The head-anchored eligibility margin follows each column as $\tau_A=\tau+0.01$ and is not separately fitted. The tail set is \{tricycle, awning-tricycle, bus\} in every cell. Abbreviations: peo=people, bic=bicycle, trk=truck, mot=motor. This is a policy-decision audit, not an AP sweep.}
+\label{tab:thresholds}
+\resizebox{\columnwidth}{!}{%
+\begin{tabular}{lccc}
+\toprule
+$\lambda$ & $\tau=0.80$ & $\tau=0.85$ & $\tau=0.90$ \\
+\midrule
+0.4 & \{peo,bic,van,trk,mot\} (35) & \{peo,bic,van,trk,mot\} (29) & \{van\} (13) \\
+0.5 & \{peo,bic,van,trk,mot\} (31) & \{peo,van,trk\} (26) & \{van\} (12) \\
+0.6 & \{peo,bic,van,trk,mot\} (31) & \{van,trk\} (23) & \{van\} (11) \\
+0.7 & \{peo,van,trk\} (29) & \{van,trk\} (21) & \{van\} (9) \\
+\bottomrule
+\end{tabular}}
+\end{table}
+\begin{table*}[!t]
+\centering
+\caption{Complete negative-result audit (native protocol, best epoch; val DFL at the best-mAP epoch). Module abbreviations: CSA = cross-scale attention (P2), CCA = class-conditioned attention (P3), FBE = frequency-balanced feature enhancement (P4/P5); the three single-module arms and the full combination are reported, while the two intermediate pair combinations were not trained. YOLO26 rows omit DFL (different loss normalization); SAFT/YOLO26 runs use shorter schedules as marked.}
+\label{tab:negative}
+\resizebox{\textwidth}{!}{%
+\begin{tabular}{lrrrrrr}
+\toprule
+Configuration & Input & Ep & AP & $\Delta$AP & val DFL & $\Delta$DFL \\
+\midrule
+Baseline v8m & 1280 & 100 & 33.42 & --- & 1.134 & --- \\
+CSA only & 1280 & 100 & 33.50 & +0.08 & 1.202 & +0.068 \\
+CCA only & 1280 & 100 & 33.39 & -0.03 & 1.213 & +0.079 \\
+FBE only & 1280 & 100 & 33.29 & -0.13 & 1.206 & +0.072 \\
+CSA+CCA+FBE (full module) & 1280 & 100 & 33.37 & -0.05 & 1.207 & +0.073 \\
+CSA+CCA+FBE + cls/box decoupling & 1280 & 100 & 32.73 & -0.69 & 1.192 & +0.058 \\
+CSA+CCA+FBE, shared cls/box features & 1280 & 100 & 32.95 & -0.47 & 1.141 & +0.007 \\
+Baseline v8m-P2 & 1280 & 100 & 35.91 & --- & 1.171 & --- \\
+CSA+CCA+FBE on v8m-P2 & 1280 & 100 & 35.44 & -0.47 & 1.221 & +0.050 \\
+YOLO26m-P2 & 1280 & 50 & 32.01 & --- & --- & --- \\
+YOLO26s-P2 & 1280 & 50 & 25.58 & --- & --- & --- \\
+YOLO26m & 1600 & 50 & 33.47 & --- & --- & --- \\
+Confusion-only sampling & 1600 & 100 & 38.42 & --- & 1.229 & --- \\
+Tail-only sampling & 1600 & 100 & 38.25 & --- & 1.233 & --- \\
+Curated allocator & 1600 & 100 & 38.24 & --- & 1.238 & --- \\
+Tail-only @1280 & 1280 & 100 & 35.98 & --- & 1.173 & --- \\
+SAFT slice-only & 640 & 30 & 39.49 & --- & 1.113 & --- \\
+SAFT hybrid & 640 & 20 & 39.51 & --- & 1.115 & --- \\
+SAFT tail & 640 & 20 & 39.37 & --- & 1.116 & --- \\
+\bottomrule
+\end{tabular}}
+\end{table*}
