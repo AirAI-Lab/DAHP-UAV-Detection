@@ -124,7 +124,7 @@ python scripts/bench_fps.py \
 @article{dahp_uav_detection,
   title   = {Regime-Dependent Rebalancing for UAV Object Detection:
              An Exposure-Aware Data-Centric Study},
-  author  = {Wen, Nu and Zhou, Ying and Chen, Yebin},
+  author  = {Wen, Nu and Zhou, Ying and Yao, Chongchong and Chen, Yebin},
   journal = {IEEE Transactions on Geoscience and Remote Sensing},
   year    = {2026},
   note    = {Under review}
