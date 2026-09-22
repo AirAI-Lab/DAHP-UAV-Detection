@@ -1,0 +1,212 @@
+{
+  "protocol": "label-only decision stability; no detector training or AP estimate",
+  "reference_size": 640,
+  "axis_margin": 0.01,
+  "num_labels": 62723,
+  "rows": [
+    {
+      "lambda": 0.4,
+      "threshold": 0.8,
+      "tail_classes": [
+        "truck",
+        "bus"
+      ],
+      "confusion_axis": [
+        "van"
+      ],
+      "rebalanced_classes": [
+        "truck",
+        "bus",
+        "van"
+      ],
+      "num_edges_above_threshold": 3
+    },
+    {
+      "lambda": 0.4,
+      "threshold": 0.85,
+      "tail_classes": [
+        "truck",
+        "bus"
+      ],
+      "confusion_axis": [
+        "van"
+      ],
+      "rebalanced_classes": [
+        "truck",
+        "bus",
+        "van"
+      ],
+      "num_edges_above_threshold": 2
+    },
+    {
+      "lambda": 0.4,
+      "threshold": 0.9,
+      "tail_classes": [
+        "truck",
+        "bus"
+      ],
+      "confusion_axis": [
+        "van"
+      ],
+      "rebalanced_classes": [
+        "truck",
+        "bus",
+        "van"
+      ],
+      "num_edges_above_threshold": 1
+    },
+    {
+      "lambda": 0.5,
+      "threshold": 0.8,
+      "tail_classes": [
+        "truck",
+        "bus"
+      ],
+      "confusion_axis": [
+        "van"
+      ],
+      "rebalanced_classes": [
+        "truck",
+        "bus",
+        "van"
+      ],
+      "num_edges_above_threshold": 3
+    },
+    {
+      "lambda": 0.5,
+      "threshold": 0.85,
+      "tail_classes": [
+        "truck",
+        "bus"
+      ],
+      "confusion_axis": [
+        "van"
+      ],
+      "rebalanced_classes": [
+        "truck",
+        "bus",
+        "van"
+      ],
+      "num_edges_above_threshold": 3
+    },
+    {
+      "lambda": 0.5,
+      "threshold": 0.9,
+      "tail_classes": [
+        "truck",
+        "bus"
+      ],
+      "confusion_axis": [
+        "van"
+      ],
+      "rebalanced_classes": [
+        "truck",
+        "bus",
+        "van"
+      ],
+      "num_edges_above_threshold": 1
+    },
+    {
+      "lambda": 0.6,
+      "threshold": 0.8,
+      "tail_classes": [
+        "truck",
+        "bus"
+      ],
+      "confusion_axis": [
+        "van"
+      ],
+      "rebalanced_classes": [
+        "truck",
+        "bus",
+        "van"
+      ],
+      "num_edges_above_threshold": 3
+    },
+    {
+      "lambda": 0.6,
+      "threshold": 0.85,
+      "tail_classes": [
+        "truck",
+        "bus"
+      ],
+      "confusion_axis": [
+        "van"
+      ],
+      "rebalanced_classes": [
+        "truck",
+        "bus",
+        "van"
+      ],
+      "num_edges_above_threshold": 3
+    },
+    {
+      "lambda": 0.6,
+      "threshold": 0.9,
+      "tail_classes": [
+        "truck",
+        "bus"
+      ],
+      "confusion_axis": [
+        "van"
+      ],
+      "rebalanced_classes": [
+        "truck",
+        "bus",
+        "van"
+      ],
+      "num_edges_above_threshold": 1
+    },
+    {
+      "lambda": 0.7,
+      "threshold": 0.8,
+      "tail_classes": [
+        "truck",
+        "bus"
+      ],
+      "confusion_axis": [
+        "van"
+      ],
+      "rebalanced_classes": [
+        "truck",
+        "bus",
+        "van"
+      ],
+      "num_edges_above_threshold": 3
+    },
+    {
+      "lambda": 0.7,
+      "threshold": 0.85,
+      "tail_classes": [
+        "truck",
+        "bus"
+      ],
+      "confusion_axis": [
+        "van"
+      ],
+      "rebalanced_classes": [
+        "truck",
+        "bus",
+        "van"
+      ],
+      "num_edges_above_threshold": 3
+    },
+    {
+      "lambda": 0.7,
+      "threshold": 0.9,
+      "tail_classes": [
+        "truck",
+        "bus"
+      ],
+      "confusion_axis": [
+        "van"
+      ],
+      "rebalanced_classes": [
+        "truck",
+        "bus",
+        "van"
+      ],
+      "num_edges_above_threshold": 1
+    }
+  ]
+}

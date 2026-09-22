@@ -1,0 +1,280 @@
+{
+  "protocol": "label-only decision stability; no detector training or AP estimate",
+  "reference_size": 1280,
+  "axis_margin": 0.01,
+  "num_labels": 343204,
+  "rows": [
+    {
+      "lambda": 0.4,
+      "threshold": 0.8,
+      "tail_classes": [
+        "tricycle",
+        "awning-tricycle",
+        "bus"
+      ],
+      "confusion_axis": [
+        "people",
+        "bicycle",
+        "van",
+        "truck",
+        "motor"
+      ],
+      "rebalanced_classes": [
+        "people",
+        "bicycle",
+        "van",
+        "truck",
+        "tricycle",
+        "awning-tricycle",
+        "bus",
+        "motor"
+      ],
+      "num_edges_above_threshold": 35
+    },
+    {
+      "lambda": 0.4,
+      "threshold": 0.85,
+      "tail_classes": [
+        "tricycle",
+        "awning-tricycle",
+        "bus"
+      ],
+      "confusion_axis": [
+        "people",
+        "bicycle",
+        "van",
+        "truck",
+        "motor"
+      ],
+      "rebalanced_classes": [
+        "people",
+        "bicycle",
+        "van",
+        "truck",
+        "tricycle",
+        "awning-tricycle",
+        "bus",
+        "motor"
+      ],
+      "num_edges_above_threshold": 29
+    },
+    {
+      "lambda": 0.4,
+      "threshold": 0.9,
+      "tail_classes": [
+        "tricycle",
+        "awning-tricycle",
+        "bus"
+      ],
+      "confusion_axis": [
+        "van"
+      ],
+      "rebalanced_classes": [
+        "van",
+        "tricycle",
+        "awning-tricycle",
+        "bus"
+      ],
+      "num_edges_above_threshold": 13
+    },
+    {
+      "lambda": 0.5,
+      "threshold": 0.8,
+      "tail_classes": [
+        "tricycle",
+        "awning-tricycle",
+        "bus"
+      ],
+      "confusion_axis": [
+        "people",
+        "bicycle",
+        "van",
+        "truck",
+        "motor"
+      ],
+      "rebalanced_classes": [
+        "people",
+        "bicycle",
+        "van",
+        "truck",
+        "tricycle",
+        "awning-tricycle",
+        "bus",
+        "motor"
+      ],
+      "num_edges_above_threshold": 31
+    },
+    {
+      "lambda": 0.5,
+      "threshold": 0.85,
+      "tail_classes": [
+        "tricycle",
+        "awning-tricycle",
+        "bus"
+      ],
+      "confusion_axis": [
+        "people",
+        "van",
+        "truck"
+      ],
+      "rebalanced_classes": [
+        "people",
+        "van",
+        "truck",
+        "tricycle",
+        "awning-tricycle",
+        "bus"
+      ],
+      "num_edges_above_threshold": 26
+    },
+    {
+      "lambda": 0.5,
+      "threshold": 0.9,
+      "tail_classes": [
+        "tricycle",
+        "awning-tricycle",
+        "bus"
+      ],
+      "confusion_axis": [
+        "van"
+      ],
+      "rebalanced_classes": [
+        "van",
+        "tricycle",
+        "awning-tricycle",
+        "bus"
+      ],
+      "num_edges_above_threshold": 12
+    },
+    {
+      "lambda": 0.6,
+      "threshold": 0.8,
+      "tail_classes": [
+        "tricycle",
+        "awning-tricycle",
+        "bus"
+      ],
+      "confusion_axis": [
+        "people",
+        "bicycle",
+        "van",
+        "truck",
+        "motor"
+      ],
+      "rebalanced_classes": [
+        "people",
+        "bicycle",
+        "van",
+        "truck",
+        "tricycle",
+        "awning-tricycle",
+        "bus",
+        "motor"
+      ],
+      "num_edges_above_threshold": 31
+    },
+    {
+      "lambda": 0.6,
+      "threshold": 0.85,
+      "tail_classes": [
+        "tricycle",
+        "awning-tricycle",
+        "bus"
+      ],
+      "confusion_axis": [
+        "van",
+        "truck"
+      ],
+      "rebalanced_classes": [
+        "van",
+        "truck",
+        "tricycle",
+        "awning-tricycle",
+        "bus"
+      ],
+      "num_edges_above_threshold": 23
+    },
+    {
+      "lambda": 0.6,
+      "threshold": 0.9,
+      "tail_classes": [
+        "tricycle",
+        "awning-tricycle",
+        "bus"
+      ],
+      "confusion_axis": [
+        "van"
+      ],
+      "rebalanced_classes": [
+        "van",
+        "tricycle",
+        "awning-tricycle",
+        "bus"
+      ],
+      "num_edges_above_threshold": 11
+    },
+    {
+      "lambda": 0.7,
+      "threshold": 0.8,
+      "tail_classes": [
+        "tricycle",
+        "awning-tricycle",
+        "bus"
+      ],
+      "confusion_axis": [
+        "people",
+        "van",
+        "truck"
+      ],
+      "rebalanced_classes": [
+        "people",
+        "van",
+        "truck",
+        "tricycle",
+        "awning-tricycle",
+        "bus"
+      ],
+      "num_edges_above_threshold": 29
+    },
+    {
+      "lambda": 0.7,
+      "threshold": 0.85,
+      "tail_classes": [
+        "tricycle",
+        "awning-tricycle",
+        "bus"
+      ],
+      "confusion_axis": [
+        "van",
+        "truck"
+      ],
+      "rebalanced_classes": [
+        "van",
+        "truck",
+        "tricycle",
+        "awning-tricycle",
+        "bus"
+      ],
+      "num_edges_above_threshold": 21
+    },
+    {
+      "lambda": 0.7,
+      "threshold": 0.9,
+      "tail_classes": [
+        "tricycle",
+        "awning-tricycle",
+        "bus"
+      ],
+      "confusion_axis": [
+        "van"
+      ],
+      "rebalanced_classes": [
+        "van",
+        "tricycle",
+        "awning-tricycle",
+        "bus"
+      ],
+      "num_edges_above_threshold": 9
+    }
+  ]
+}
