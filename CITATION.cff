@@ -1,0 +1,33 @@
+cff-version: 1.2.0
+message: "If you use this code, please cite the paper."
+title: "Regime-Dependent Rebalancing for UAV Object Detection: An Exposure-Aware Data-Centric Study"
+type: article
+authors:
+  - family-names: "Wen"
+    given-names: "Nu"
+    email: "wennu1989@gmail.com"
+  - family-names: "Zhou"
+    given-names: "Ying"
+  - family-names: "Yao"
+    given-names: "Chongchong"
+  - family-names: "Chen"
+    given-names: "Yebin"
+    email: "chenyebin@szu.edu.cn"
+journal: "IEEE Transactions on Geoscience and Remote Sensing"
+year: 2026
+notes: "Under review"
+repository-code: "https://github.com/AirAI-Lab/DAHP-UAV-Detection"
+abstract: >-
+  A label-only profiler quantifies long-tail, scale imbalance, and confusion
+  pathologies in UAV imagery; a bounded policy search then maps the profile,
+  through a regime-dependent rebalancing principle, to disclosed
+  training-time policies.
+keywords:
+  - UAV object detection
+  - long-tailed recognition
+  - data-centric AI
+  - exposure-aware rebalancing
+  - oversampling
+  - VisDrone
+  - UAVDT
+license: MIT

@@ -1,0 +1,17 @@
+name: dahp
+channels:
+  - defaults
+dependencies:
+  - python=3.10.20
+  - pip
+  - pip:
+      - --extra-index-url=https://download.pytorch.org/whl/cu121
+      - numpy==2.2.6
+      - torch==2.5.1+cu121
+      - torchvision==0.20.1+cu121
+      - ultralytics==8.4.60
+      - pycocotools==2.0.11
+      - opencv-python==4.13.0.92
+      - matplotlib==3.10.9
+      - PyYAML==6.0.3
+      - tqdm==4.70.0

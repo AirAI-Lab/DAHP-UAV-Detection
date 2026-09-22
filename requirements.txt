@@ -1,0 +1,11 @@
+# Minimum environment for profiling, evaluation, figures, and latency benchmarks.
+# For bit-level experiment provenance, use requirements-lock.txt or environment.yml.
+numpy>=1.24,<3
+torch>=2.5.1
+torchvision>=0.20.1
+ultralytics==8.4.60
+pycocotools
+opencv-python
+matplotlib
+PyYAML
+tqdm
